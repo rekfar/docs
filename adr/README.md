@@ -32,6 +32,7 @@ Each ADR uses this structure:
 | [0010](0010-tech-stack-dotnet-azure-sql.md) | Technology stack: .NET on Azure with Azure SQL spatial | Accepted |
 | [0011](0011-map-kartverket-maplibre.md) | Map provider & renderer: Kartverket raster tiles + MapLibre GL | Accepted |
 | [0012](0012-kartverket-primary-source.md) | Kartverket as the primary source for peaks, routes, and cabins | Accepted |
+| [0013](0013-schema-owned-by-sql-database-project.md) | The database schema is owned by a SQL Database Project (DACPAC) | Accepted |
 
 ## Adding a new ADR
 
