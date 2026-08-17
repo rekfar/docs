@@ -30,7 +30,7 @@ param(
     [switch]   $Apply
 )
 
-. "$PSScriptRoot\Common.ps1"
+. "$PSScriptRoot\..\Common.ps1"
 $ErrorActionPreference = 'Stop'
 
 # Not defaulted in the param block: Windows PowerShell does not populate $PSScriptRoot there.

@@ -1,0 +1,66 @@
+name: Traceability
+
+# Pull, never push (ADR-0014 decision 7). This workflow re-derives the whole matrix from
+# the issues on every run, so a missed event is corrected by the next run instead of
+# leaving the documentation permanently wrong. No other repository needs write access here,
+# and no repository needs write access to this one.
+
+on:
+  schedule:
+    # Daily. Nothing depends on the hour; it is off the top of the hour because GitHub
+    # drops scheduled runs at busy times.
+    - cron: '17 5 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      # Deliberately NOT requirements/** - that would include traceability.md, which this
+      # workflow writes. GITHUB_TOKEN pushes do not re-trigger workflows, so the loop is
+      # already prevented, but naming the inputs explicitly means the trigger says what it
+      # actually depends on.
+      - 'requirements/functional-requirements.md'
+      - 'requirements/non-functional-requirements.md'
+      - 'use-cases/use-cases.md'
+      - 'tools/**'
+      - '.github/workflows/traceability.yml'
+
+permissions:
+  contents: write
+  issues: read
+
+concurrency:
+  group: traceability
+  cancel-in-progress: false
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check every requirement has an issue
+        # Dry run. Fails if a table row was added without running sync, which is the whole
+        # point: a new requirement cannot go quietly untracked.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
+        run: ./tools/traceability/Sync-Requirements.ps1 -FailOnMissing
+
+      - name: Regenerate the traceability matrix
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
+        run: ./tools/traceability/Build-Matrix.ps1
+
+      - name: Commit if it changed
+        shell: bash
+        run: |
+          if [[ -z "$(git status --porcelain requirements/traceability.md)" ]]; then
+            echo "No change."
+            exit 0
+          fi
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/traceability.md
+          git commit -m 'Update traceability matrix'
+          git push

@@ -38,7 +38,7 @@ param(
     [switch] $Apply
 )
 
-. "$PSScriptRoot\Common.ps1"
+. "$PSScriptRoot\..\Common.ps1"
 $ErrorActionPreference = 'Stop'
 
 Assert-GhScope -Scope 'repo'
