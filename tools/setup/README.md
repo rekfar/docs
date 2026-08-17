@@ -13,7 +13,7 @@ and reconciles the requirement issues and generates the matrix — is separate a
 | --- | --- | --- |
 | `Sync-Labels.ps1` | all four repos | Creates the label set in [`labels.json`](labels.json) |
 | `Sync-ProjectFields.ps1` | project #1 | Creates the custom fields on "Project management" |
-| `Sync-Milestones.ps1` | `docs` | Creates the roadmap-phase milestones |
+| `Sync-Milestones.ps1` | `docs` | Creates the `Later` milestone |
 
 All three:
 
@@ -59,7 +59,27 @@ project needs a YAML parser: the workflow files and issue forms are parsed by Gi
 | All labels in all repos | `requirement` everywhere; the rest only in `docs` | Requirement issues live in `docs`. `requirement` is needed everywhere because the work-item template applies it |
 | *Use case* single-select | **Text** | A requirement can serve several use cases (FR-LOG-8 serves UC-2, UC-6, UC-13); a single-select would silently drop all but one |
 | *Layer* single-select | **No field** — the `layer:*` labels | Multi-valued too, and labels already handle it. The board can filter on labels |
+| *Phase* single-select + phase milestones | **Dropped** — only the `Later` milestone remains | See below |
 | Status: Backlog / In Progress / In Review / Done | Left as Todo / In Progress / Done | See below |
+
+### There is no Phase field, and no phase milestones
+
+Both were built, then removed, because nothing in the requirements documents assigns a
+roadmap phase to a requirement. Only 3 of 73 rows carry any hint, and those are free text
+inside the Priority column (`W (Phase 3)`, `W (later)`, `C (later phase)`). A Phase field with
+no source would have been filled in by hand or left empty — a third scheduling axis that
+disagrees with the other two within a month.
+
+**Priority (M/S/C/W) is the scheduling axis**, and unlike phase it is genuinely
+per-requirement, already accurate, and already carried as both a label and a project field.
+
+The `Later` milestone survives because [ADR-0014](../../adr/0014-requirements-traceability.md)
+decision 3 depends on it: the six `W` requirements get issues like every other requirement and
+are parked there, so promoting one is a priority change rather than a creation event.
+
+If a phase axis is wanted later, the honest way to get one is a `Phase` column in
+`functional-requirements.md` — a hand-maintained product decision per requirement, which the
+tooling can then read like everything else.
 
 ### The Status field is not modified
 
@@ -76,8 +96,7 @@ decision 8).
 
 - **25 labels** — `requirement` in all four repos; 13 `FR-*` group labels, 4 `priority:*`,
   and 4 `layer:*` in `docs`
-- **4 project fields** — Requirement ID (text), Use case (text), Priority (single-select),
-  Phase (single-select)
-- **5 milestones in `docs`** — Phase 1 to Phase 4, and Later
+- **3 project fields** — Requirement ID (text), Use case (text), Priority (single-select)
+- **1 milestone in `docs`** — `Later`
 
 The other repositories' own milestones are untouched.

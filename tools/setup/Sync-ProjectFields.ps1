@@ -15,12 +15,17 @@
       Use case        TEXT           Deliberately NOT single-select. A requirement can serve
                                      several use cases (FR-LOG-8 serves UC-2, UC-6 and UC-13),
                                      and a single-select would silently drop all but one.
-      Priority        SINGLE_SELECT  Genuinely single-valued.
-      Phase           SINGLE_SELECT  Genuinely single-valued.
+      Priority        SINGLE_SELECT  Genuinely single-valued, and the only scheduling axis
+                                     the requirements documents actually carry.
 
     Layer has no field: it is multi-valued too (a requirement can need backend, webapp and
     database at once) and is already carried by the layer:* labels, which the board can
     filter on.
+
+    There is no Phase field. The plan called for one, but nothing in the requirements
+    documents assigns a roadmap phase to a requirement - only 3 of 73 rows carry a hint, as
+    free text inside the Priority column - so the field had no source and would have been
+    filled in by hand or not at all. Priority (M/S/C/W) is the scheduling axis instead.
 
     The built-in Status field is left alone. See the note this script prints.
 
@@ -44,19 +49,10 @@ $ErrorActionPreference = 'Stop'
 
 Assert-GhScope -Scope 'project'
 
-$phases = @(
-    'Phase 1 - MVP',
-    'Phase 2 - Richer logging and data',
-    'Phase 3 - Polish, sharing and reach',
-    'Phase 4 - Native app',
-    'Later'
-)
-
 $wanted = @(
     [pscustomobject]@{ Name = 'Requirement ID'; DataType = 'TEXT';          Options = $null },
     [pscustomobject]@{ Name = 'Use case';       DataType = 'TEXT';          Options = $null },
-    [pscustomobject]@{ Name = 'Priority';       DataType = 'SINGLE_SELECT'; Options = @('M - Must', 'S - Should', 'C - Could', 'W - Wont') },
-    [pscustomobject]@{ Name = 'Phase';          DataType = 'SINGLE_SELECT'; Options = $phases }
+    [pscustomobject]@{ Name = 'Priority';       DataType = 'SINGLE_SELECT'; Options = @('M - Must', 'S - Should', 'C - Could', 'W - Wont') }
 )
 
 if (-not $Apply) {

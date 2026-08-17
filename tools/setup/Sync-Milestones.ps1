@@ -1,10 +1,19 @@
 <#
 .SYNOPSIS
-    Create the roadmap-phase milestones in rekfar/docs, where the requirement issues live.
+    Create the "Later" milestone in rekfar/docs, where the requirement issues live.
 
 .DESCRIPTION
-    The milestones mirror the phases in architecture/06-roadmap.md, plus "Later" for
-    requirements scheduled out (MoSCoW W).
+    There is exactly one milestone here, and it is not a phase.
+
+    The plan originally called for milestones mirroring the phases in
+    architecture/06-roadmap.md. They were dropped: nothing in the requirements documents
+    assigns a phase to a requirement, so no tool could fill them in and they would have
+    decayed into hand-maintained guesses. Priority (M/S/C/W) is the scheduling axis the
+    documents actually carry, and it is already a label and a project field.
+
+    "Later" stays because ADR-0014 decision 3 depends on it: the six MoSCoW W requirements
+    get issues like every other requirement, parked here rather than left absent, so that
+    promoting one is a priority change and not a creation event.
 
     Only rekfar/docs is touched. The other repositories have their own working milestones
     ("Show peaks on map", "Webapp MVP", "Database MVP") which are the maintainer's and are
@@ -35,22 +44,6 @@ $ErrorActionPreference = 'Stop'
 Assert-GhScope -Scope 'repo'
 
 $wanted = @(
-    [pscustomobject]@{
-        Title       = 'Phase 1 - MVP'
-        Description = 'Personal summit log on a map: account, map, peak catalogue, trip logging, planning, basic stats. See architecture/06-roadmap.md.'
-    },
-    [pscustomobject]@{
-        Title       = 'Phase 2 - Richer logging and data'
-        Description = 'GPX import, Strava, cabins, guestbook, trails layer, photos, wishlist, export, achievements.'
-    },
-    [pscustomobject]@{
-        Title       = 'Phase 3 - Polish, sharing and reach'
-        Description = 'Per-trip sharing, friends and tagging, more activity services, better stats, accessibility, English UI.'
-    },
-    [pscustomobject]@{
-        Title       = 'Phase 4 - Native app'
-        Description = 'Native client on the same API: live GPS recording, offline maps.'
-    },
     [pscustomobject]@{
         Title       = 'Later'
         Description = 'Scheduled out, not forgotten. Where MoSCoW W requirements are parked (ADR-0014 decision 3).'
