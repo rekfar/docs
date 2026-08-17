@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: How requirement tracking works
+    url: https://github.com/rekfar/docs/blob/main/requirements/README.md
+    about: The ID scheme, the chain from use case to merge commit, and what to do when a requirement changes.
+  - name: Non-functional requirements
+    url: https://github.com/rekfar/docs/blob/main/requirements/non-functional-requirements.md
+    about: NFRs get no issues — they are standing constraints. Reference them from a PR or an ADR instead.
+  - name: Implementation work
+    url: https://github.com/rekfar/docs/blob/main/requirements/README.md#where-the-work-happens
+    about: Code belongs in rekfar/backend, rekfar/webapp, or rekfar/database — not here.

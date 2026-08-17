@@ -93,8 +93,30 @@ layer).
 ### Change a requirement's wording or priority
 
 Edit the table row and run `sync`. It rewrites the generated block at the top of the issue
-body and re-applies the priority label. Anything you wrote **below** the marker comment in
-the issue — acceptance criteria, discussion — is left alone.
+body and re-applies the priority label. Anything below the block — acceptance criteria,
+discussion, decisions — is left alone.
+
+The boundary is explicit. A requirement issue body looks like this:
+
+```markdown
+<!-- traceability:begin — generated from requirements/functional-requirements.md; do not edit -->
+Requirement: FR-MAP-2
+
+**The map shows known mountain tops (fjelltopper) as markers.**
+
+- **Priority:** M (Must — MVP)
+- **Capability:** C4
+- **Use cases:** UC-5
+- **Phase:** 1
+<!-- traceability:end -->
+
+## Acceptance criteria
+- [ ] Markers render at zoom 8 and above
+```
+
+`sync` replaces everything **between** the two markers and never reads or writes a byte
+outside them. An issue missing the markers is adopted: the block is prepended and the
+existing body kept underneath.
 
 ### Retire a requirement
 

@@ -1,0 +1,81 @@
+name: Requirement
+description: Open the tracking issue for one functional requirement (FR-*).
+title: "FR-"
+labels: ["requirement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Requirement issues are normally created for you.** `tools/traceability sync` opens
+        one issue per row in
+        [functional-requirements.md](https://github.com/rekfar/docs/blob/main/requirements/functional-requirements.md),
+        so the usual way to get a requirement issue is to **add the table row and run `sync`** —
+        not to fill in this form.
+
+        Use this form only when you need the issue to exist before the next `sync` run. Keep it
+        short: `sync` will adopt the issue and rewrite the generated block from the table, so
+        anything you type into it that disagrees with the table is discarded.
+
+        Not a requirement? Bug reports, documentation fixes, and process work go in a blank
+        issue. Non-functional requirements (`NFR-*`) get **no issues at all** — see
+        [ADR-0014](https://github.com/rekfar/docs/blob/main/adr/0014-requirements-traceability.md).
+
+  - type: input
+    id: requirement-id
+    attributes:
+      label: Requirement ID
+      description: >-
+        Must already be a row in functional-requirements.md. IDs are permanent — never reuse a
+        retired one, and never fill a gap left by one.
+      placeholder: FR-MAP-2
+    validations:
+      required: true
+
+  - type: textarea
+    id: requirement-text
+    attributes:
+      label: Requirement text
+      description: Copy the wording from the table verbatim. `sync` will overwrite this to match.
+      placeholder: The map shows known mountain tops (fjelltopper) as markers.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority (MoSCoW)
+      description: As in the table. `W` requirements get an issue too — parked, not absent.
+      options:
+        - M — Must (MVP)
+        - S — Should
+        - C — Could
+        - W — Won't (this time)
+    validations:
+      required: true
+
+  - type: input
+    id: use-cases
+    attributes:
+      label: Use cases
+      description: Which use cases exercise this requirement.
+      placeholder: UC-5
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: >-
+        How you will know this is done. This is **yours** — `sync` never touches anything below
+        the generated block. Leave it empty if the requirement is not near its phase yet.
+      value: |
+        - [ ]
+        - [ ]
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        **Where the work happens.** This issue tracks the *requirement*. The code goes in
+        `backend` / `webapp` / `database`, connected back either by a pull request whose body
+        says `Fixes rekfar/docs#<this issue>` — the cross-repository form is required — or by
+        adding the code-repo issues as **sub-issues** of this one.
