@@ -7,6 +7,13 @@ from the [business architecture](../architecture/02-business-architecture.md) an
 
 Domain terms follow the [glossary](../glossary.md).
 
+**This file is the source of truth for requirement _text_ and is edited by hand.** Each
+`FR-*` also has one GitHub issue in `rekfar/docs`, and the generated
+[traceability matrix](traceability.md) shows its current status, issue, and pull request.
+See the [requirements README](README.md) for the conventions and
+[ADR-0014](../adr/0014-requirements-traceability.md) for the reasoning. IDs are permanent:
+never reused, never renumbered.
+
 ## Account & profile (FR-ACC) — capability C9
 
 | ID | Requirement | Priority |

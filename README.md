@@ -19,6 +19,7 @@ add clarity and skip the heavy governance ceremony.
 | D — Technology Architecture (supporting) | Three concrete candidate stacks compared, as input to ADR-0005 | [architecture/tech-stack-options.md](architecture/tech-stack-options.md) |
 | E/F — Opportunities, Solutions & Migration | Roadmap and phased delivery | [architecture/06-roadmap.md](architecture/06-roadmap.md) |
 | Requirements Management | Functional and non-functional requirements (central to all phases) | [requirements/](requirements/) |
+| Requirements Management | How a requirement traces to the issue, PR, and commit that implement it | [requirements/README.md](requirements/README.md) |
 | — (supporting) | Concrete user-facing behaviour | [use-cases/use-cases.md](use-cases/use-cases.md) |
 | G/H — Governance & Change Management | How decisions are recorded and evolved | [adr/](adr/) |
 
@@ -34,6 +35,10 @@ If you are new to the project, read in this order:
 6. [Requirements](requirements/) and the [Roadmap](architecture/06-roadmap.md).
 7. [ADRs](adr/) for the reasoning behind specific decisions.
 
+If you are about to *build* something, start at the
+[requirements README](requirements/README.md): it explains how a requirement connects to
+its GitHub issue, pull request, and commit, and what to do when a requirement changes.
+
 ## Documentation conventions
 
 - **Language:** Documentation is in English. UI copy is in Norwegian (see
@@ -41,6 +46,9 @@ If you are new to the project, read in this order:
 - **Domain terms:** Written in English with the Norwegian term in parentheses on
   first use in a document, e.g. *summit trip (topptur)*. The
   [glossary](glossary.md) is the canonical list.
+- **Requirement IDs:** `FR-*`, `NFR-*`, and `UC-*` IDs are **permanent** — never reused,
+  never renumbered — because issues, pull requests, and ADRs point at them. Each `FR-*` has
+  one GitHub issue; see [requirements/README.md](requirements/README.md).
 - **Decisions:** Significant or hard-to-reverse choices are captured as
   [Architecture Decision Records](adr/). Decisions we have deliberately *not* made
   yet (e.g. tech stack, map provider) are recorded as **deferred** ADRs so the
