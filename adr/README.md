@@ -33,6 +33,7 @@ Each ADR uses this structure:
 | [0011](0011-map-kartverket-maplibre.md) | Map provider & renderer: Kartverket raster tiles + MapLibre GL | Accepted |
 | [0012](0012-kartverket-primary-source.md) | Kartverket as the primary source for peaks, routes, and cabins | Accepted |
 | [0013](0013-schema-owned-by-sql-database-project.md) | The database schema is owned by a SQL Database Project (DACPAC) | Accepted |
+| [0014](0014-requirements-traceability.md) | Requirements traceability: one issue per functional requirement | Accepted |
 
 ## Adding a new ADR
 
