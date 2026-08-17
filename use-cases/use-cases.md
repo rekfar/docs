@@ -161,6 +161,11 @@ it exercises.
 
 ## Traceability summary
 
+Each use case names the requirement **groups** it exercises. For the state of an individual
+requirement — its issue, pull request, and whether it is built — see the generated
+[traceability matrix](../requirements/traceability.md), which rolls up per use case
+([ADR-0014](../adr/0014-requirements-traceability.md)).
+
 | Use case | Capabilities | Key requirements |
 | --- | --- | --- |
 | UC-1 | C9 | FR-ACC |

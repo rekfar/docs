@@ -4,6 +4,11 @@ Quality attributes the system must satisfy, with IDs for traceability. These are
 sized for a **hobby project** (Principle P1) — deliberately modest where enterprise
 systems would be strict.
 
+Unlike the [functional requirements](functional-requirements.md), an `NFR-*` gets **no
+GitHub issue** — it is a standing constraint rather than a unit of work, and would never
+close. Reference NFR IDs from pull requests and ADRs instead; that is where the evidence
+they hold belongs. See [ADR-0014](../adr/0014-requirements-traceability.md).
+
 ## Cost & operations (NFR-COST) — P1
 
 | ID | Requirement |
