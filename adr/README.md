@@ -33,6 +33,8 @@ Each ADR uses this structure:
 | [0011](0011-map-kartverket-maplibre.md) | Map provider & renderer: Kartverket raster tiles + MapLibre GL | Accepted |
 | [0012](0012-kartverket-primary-source.md) | Kartverket as the primary source for peaks, routes, and cabins | Accepted |
 | [0013](0013-schema-owned-by-sql-database-project.md) | The database schema is owned by a SQL Database Project (DACPAC) | Accepted |
+| [0015](0015-ingestion-lives-in-the-database-repository.md) | Reference-data ingestion lives in the database repository | Accepted |
+| [0016](0016-ssr-general-use-distribution.md) | The peak import reads the general-use Stedsnavn distribution | Accepted |
 
 ## Adding a new ADR
 
