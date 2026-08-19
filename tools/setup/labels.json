@@ -1,0 +1,42 @@
+{
+  "$comment": [
+    "The label set for requirement tracking (ADR-0014). Applied by Sync-Labels.ps1.",
+    "There is deliberately no label per requirement ID: 73 of them across four repositories",
+    "is unmanageable, and the ID is already in the issue title and body.",
+    "'repos' scopes a label. FR-* group, priority and layer labels only make sense in docs,",
+    "where the requirement issues live; 'requirement' is needed everywhere because the",
+    "work-item template in rekfar/.github applies it."
+  ],
+  "labels": [
+    {
+      "name": "requirement",
+      "color": "1D76DB",
+      "description": "Tracks a functional requirement, or work serving one",
+      "repos": ["docs", "backend", "webapp", "database"]
+    },
+
+    { "name": "FR-ACC",    "color": "C5DEF5", "description": "Account & profile",                    "repos": ["docs"] },
+    { "name": "FR-LOG",    "color": "C5DEF5", "description": "Trip logging",                         "repos": ["docs"] },
+    { "name": "FR-BOOK",   "color": "C5DEF5", "description": "Logbook — private diary & guestbook",  "repos": ["docs"] },
+    { "name": "FR-PLAN",   "color": "C5DEF5", "description": "Trip planning & wishlist",             "repos": ["docs"] },
+    { "name": "FR-MAP",    "color": "C5DEF5", "description": "Map & visualisation",                  "repos": ["docs"] },
+    { "name": "FR-PEAK",   "color": "C5DEF5", "description": "Peak & trail catalogue",               "repos": ["docs"] },
+    { "name": "FR-STAT",   "color": "C5DEF5", "description": "Statistics & achievements",            "repos": ["docs"] },
+    { "name": "FR-DATA",   "color": "C5DEF5", "description": "Import / export",                      "repos": ["docs"] },
+    { "name": "FR-ACT",    "color": "C5DEF5", "description": "Activity-tracking integrations",       "repos": ["docs"] },
+    { "name": "FR-REF",    "color": "C5DEF5", "description": "Reference data — sources & ingestion", "repos": ["docs"] },
+    { "name": "FR-SHARE",  "color": "C5DEF5", "description": "Sharing",                              "repos": ["docs"] },
+    { "name": "FR-SOCIAL", "color": "C5DEF5", "description": "Connections between users",            "repos": ["docs"] },
+    { "name": "FR-I18N",   "color": "C5DEF5", "description": "Internationalisation",                 "repos": ["docs"] },
+
+    { "name": "priority:must",   "color": "B60205", "description": "MoSCoW M — required for the MVP",    "repos": ["docs"] },
+    { "name": "priority:should", "color": "D93F0B", "description": "MoSCoW S — important, not vital",    "repos": ["docs"] },
+    { "name": "priority:could",  "color": "FBCA04", "description": "MoSCoW C — desirable if it is cheap","repos": ["docs"] },
+    { "name": "priority:wont",   "color": "CFD3D7", "description": "MoSCoW W — scheduled out, not forgotten", "repos": ["docs"] },
+
+    { "name": "layer:backend",  "color": "5319E7", "description": "Needs work in rekfar/backend",  "repos": ["docs"] },
+    { "name": "layer:webapp",   "color": "006B75", "description": "Needs work in rekfar/webapp",   "repos": ["docs"] },
+    { "name": "layer:database", "color": "0052CC", "description": "Needs work in rekfar/database", "repos": ["docs"] },
+    { "name": "layer:docs",     "color": "BFD4F2", "description": "Needs work in rekfar/docs",     "repos": ["docs"] }
+  ]
+}
