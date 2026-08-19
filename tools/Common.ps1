@@ -48,11 +48,21 @@ function Invoke-GhJson {
 }
 
 function Assert-GhScope {
-    # Fail early and legibly rather than part-way through a run.
+    <#
+        Fail early and legibly rather than part-way through a run.
+
+        A GitHub Actions installation token (GITHUB_TOKEN) reports no scopes at all - its
+        permissions come from the workflow's `permissions:` block instead. So the absence of
+        a "Token scopes:" line means "cannot tell", not "missing", and the check steps aside.
+        A token that does report its scopes is held to them.
+    #>
     param([Parameter(Mandatory)][string] $Scope)
 
     $gh = Get-GhPath
     $status = (& $gh auth status 2>&1 | Out-String)
+
+    if ($status -notmatch 'Token scopes:') { return }
+
     if ($status -notmatch "'[^']*\b$([regex]::Escape($Scope))\b[^']*'") {
         throw "The gh token is missing the '$Scope' scope. Grant it with: gh auth refresh -s $Scope"
     }
