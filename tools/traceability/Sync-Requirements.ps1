@@ -165,6 +165,12 @@ if (-not $Apply) {
 }
 Write-Host ("Requirements in scope: {0}" -f $requirements.Count)
 
+# Milestone titles to numbers: the REST API identifies a milestone by number.
+$milestoneNumbers = @{}
+foreach ($m in (Invoke-GhJson @('api', "repos/$full/milestones?state=all&per_page=100"))) {
+    $milestoneNumbers[$m.title] = $m.number
+}
+
 # Existing requirement issues, indexed by requirement ID.
 $issues = Invoke-GhJson @('issue', 'list', '--repo', $full, '--label', 'requirement',
                           '--state', 'all', '--limit', '500',
@@ -222,11 +228,21 @@ foreach ($r in ($requirements | Sort-Object Group, { [int]($_.Id -replace '^.*-'
         $counts.create++
 
         if ($Apply) {
-            $args = @('issue', 'create', '--repo', $full, '--title', $title,
-                      '--body', (New-IssueBody -Requirement $r))
-            foreach ($l in $wantLabels) { $args += @('--label', $l) }
-            if ($wantMilestone) { $args += @('--milestone', $wantMilestone) }
-            Invoke-Gh $args | Out-Null
+            # Created through the REST API rather than `gh issue create` so the title and
+            # body travel in a JSON file instead of on a command line. See Invoke-GhApiJson.
+            $payload = @{
+                title  = $title
+                body   = (New-IssueBody -Requirement $r)
+                labels = @($wantLabels)
+            }
+            if ($wantMilestone) {
+                if (-not $milestoneNumbers.ContainsKey($wantMilestone)) {
+                    throw "Milestone '$wantMilestone' does not exist in $full. Run tools/setup/Sync-Milestones.ps1 -Apply first."
+                }
+                # The REST API takes a milestone number; only the CLI accepts a title.
+                $payload.milestone = $milestoneNumbers[$wantMilestone]
+            }
+            Invoke-GhApiJson -Endpoint "repos/$full/issues" -Method POST -Body $payload | Out-Null
 
             # Issue creation is content-creating, so it is governed by GitHub's secondary
             # rate limit rather than the hourly one. 73 issues fired as fast as the API
@@ -262,12 +278,23 @@ foreach ($r in ($requirements | Sort-Object Group, { [int]($_.Id -replace '^.*-'
     $counts.update++
 
     if ($Apply) {
-        $args = @('issue', 'edit', [string]$issue.number, '--repo', $full)
-        if ($changes -contains 'title') { $args += @('--title', $title) }
-        if ($changes -contains 'body') { $args += @('--body', $newBody) }
-        foreach ($l in $addLabels) { $args += @('--add-label', $l) }
-        foreach ($l in $stalePriority) { $args += @('--remove-label', $l) }
-        Invoke-Gh $args | Out-Null
+        # Title and body through the API, for the same reason as creation.
+        $patch = @{}
+        if ($changes -contains 'title') { $patch.title = $title }
+        if ($changes -contains 'body') { $patch.body = $newBody }
+        if ($patch.Count -gt 0) {
+            Invoke-GhApiJson -Endpoint "repos/$full/issues/$($issue.number)" -Method PATCH -Body $patch | Out-Null
+        }
+
+        # Labels stay on the CLI. Their values are short ASCII names with no quoting
+        # hazard, and --add-label/--remove-label change only the labels named. Sending
+        # labels in the PATCH would replace the whole set and silently drop any the
+        # maintainer added by hand.
+        $ghArgs = @('issue', 'edit', [string]$issue.number, '--repo', $full)
+        $labelChange = $false
+        foreach ($l in $addLabels) { $ghArgs += @('--add-label', $l); $labelChange = $true }
+        foreach ($l in $stalePriority) { $ghArgs += @('--remove-label', $l); $labelChange = $true }
+        if ($labelChange) { Invoke-Gh $ghArgs | Out-Null }
     }
 }
 
