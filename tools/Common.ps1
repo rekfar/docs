@@ -81,3 +81,35 @@ function Write-Plan {
     if ($Detail) { $line = $line + '  (' + $Detail + ')' }
     Write-Host $line -ForegroundColor $colour
 }
+
+function Invoke-GhApiJson {
+    <#
+        Call the REST API with a JSON request body supplied as a FILE.
+
+        Content is never passed as a command-line argument. Windows PowerShell and pwsh
+        quote native arguments differently, and neither survives a value containing a
+        double quote: the argument is split and gh reports "unknown arguments ... please
+        quote all values that have spaces".
+
+        FR-MAP-8 is the requirement that found this - its text contains
+        (e.g. "Kartverket") - and FR-REF-2 would have been next. Escaping the quotes would
+        work today and break on the next shell that changes its rules, so the content goes
+        in a file instead and no shell ever parses it.
+    #>
+    param(
+        [Parameter(Mandatory)][string] $Endpoint,
+        [Parameter(Mandatory)][ValidateSet('POST', 'PATCH', 'PUT')][string] $Method,
+        [Parameter(Mandatory)][hashtable] $Body
+    )
+
+    $json = $Body | ConvertTo-Json -Depth 10
+    $tmp = [System.IO.Path]::GetTempFileName()
+    try {
+        # UTF-8 with no BOM: a BOM makes gh fail to parse the payload.
+        [System.IO.File]::WriteAllText($tmp, $json, (New-Object System.Text.UTF8Encoding($false)))
+        return Invoke-GhJson @('api', $Endpoint, '--method', $Method, '--input', $tmp)
+    }
+    finally {
+        Remove-Item $tmp -ErrorAction SilentlyContinue
+    }
+}
