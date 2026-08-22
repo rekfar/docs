@@ -14,7 +14,8 @@ standing constraint never closes. See
 
 | Status | Requirements |
 | --- | --- |
-| Not started | 67 |
+| Implemented | 2 |
+| Not started | 65 |
 | Deferred | 6 |
 | **Total** | **73** |
 
@@ -28,7 +29,7 @@ standing constraint never closes. See
 | FR-DATA | 4 | 0 | 0 | 4 | 0 |
 | FR-I18N | 2 | 0 | 0 | 2 | 0 |
 | FR-LOG | 8 | 0 | 0 | 8 | 0 |
-| FR-MAP | 8 | 0 | 0 | 8 | 0 |
+| FR-MAP | 8 | 2 | 0 | 6 | 0 |
 | FR-PEAK | 5 | 0 | 0 | 5 | 0 |
 | FR-PLAN | 6 | 0 | 0 | 6 | 0 |
 | FR-REF | 11 | 0 | 0 | 11 | 0 |
@@ -42,9 +43,9 @@ standing constraint never closes. See
 | --- | --- | --- |
 | [UC-1](../use-cases/use-cases.md) Register and set up an account | 5 | 0 / 5 |
 | [UC-2](../use-cases/use-cases.md) Log a completed summit trip (turføring) | 10 | 0 / 10 |
-| [UC-3](../use-cases/use-cases.md) Plan a future trip (turplanlegging) | 5 | 0 / 5 |
+| [UC-3](../use-cases/use-cases.md) Plan a future trip (turplanlegging) | 5 | 1 / 5 |
 | [UC-4](../use-cases/use-cases.md) Build a wishlist / bucket list (ønskeliste) | 5 | 0 / 5 |
-| [UC-5](../use-cases/use-cases.md) Explore the map (kartutforsking) | 8 | 0 / 8 |
+| [UC-5](../use-cases/use-cases.md) Explore the map (kartutforsking) | 8 | 2 / 8 |
 | [UC-6](../use-cases/use-cases.md) Browse a peak and see personal history (toppdetalj) | 4 | 0 / 4 |
 | [UC-7](../use-cases/use-cases.md) Import a GPX track (spor-import) | 3 | 0 / 3 |
 | [UC-8](../use-cases/use-cases.md) See statistics (statistikk) | 4 | 0 / 4 |
@@ -414,12 +415,15 @@ The map shows known **mountain tops (fjelltopper)** as markers.
 
 | | |
 | --- | --- |
-| Status | **Not started** |
+| Status | **Implemented** |
 | Priority | M |
 | Group | [FR-MAP](functional-requirements.md#map--visualisation-fr-map--capability-c4) |
 | Capability | C4 |
 | Use cases | UC-3, UC-5 |
 | Issue | [#48](https://github.com/rekfar/docs/issues/48) |
+| Pull requests | [rekfar/webapp#12](https://github.com/rekfar/webapp/pull/12) |
+| Merged | 2026-08-21 |
+| Commit | [`50d0c2b`](https://github.com/rekfar/webapp/commit/50d0c2b480cb3f33ea4ed8c3a4c0bb31cf5f4d2e) |
 
 ### FR-MAP-3
 
@@ -453,12 +457,15 @@ The map fetches features for the current extent (**utstrekning**) efficiently.
 
 | | |
 | --- | --- |
-| Status | **Not started** |
+| Status | **Implemented** |
 | Priority | M |
 | Group | [FR-MAP](functional-requirements.md#map--visualisation-fr-map--capability-c4) |
 | Capability | C4 |
 | Use cases | UC-5 |
 | Issue | [#51](https://github.com/rekfar/docs/issues/51) |
+| Pull requests | [rekfar/webapp#12](https://github.com/rekfar/webapp/pull/12) |
+| Merged | 2026-08-21 |
+| Commit | [`50d0c2b`](https://github.com/rekfar/webapp/commit/50d0c2b480cb3f33ea4ed8c3a4c0bb31cf5f4d2e) |
 
 ### FR-MAP-6
 
