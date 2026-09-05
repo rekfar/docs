@@ -1,8 +1,10 @@
 # User accounts — MVP plan (FR-ACC-1..3)
 
-**Status:** Draft for discussion — deliberately brief. The detail is expanded once the
-approach is chosen, and the choice itself is recorded as an ADR closing **T9 — Auth**
-([technology architecture §T9](05-technology-architecture.md#t9--auth)).
+**Status:** Decided — **approach B** was chosen and recorded as
+[ADR-0017](../adr/0017-passwordless-email-sign-in.md), which closes **T9 — Auth**
+([technology architecture §T9](05-technology-architecture.md#t9--auth)). This page remains
+the supporting comparison behind that decision, the way
+[tech-stack-options.md](tech-stack-options.md) supports ADR-0010.
 
 ## 1. What we are building
 
@@ -69,12 +71,14 @@ but it requires every user to hold a Google/GitHub account, sends a Norwegian hi
 user base through a third party (P9, NFR-PRIV-5), and leaves us with no account for someone
 who has neither.
 
-## 5. Recommendation to decide on
+## 5. The decision
 
-**B as the primary flow, with C addable later** — ASP.NET Core Identity as the user store and
-session issuer, passwordless email sign-in as the only credential in the MVP, no password
-column populated. This keeps ADR-0010's T9 choice (Identity, cookie/JWT) intact while
-dropping the part of it that carries the most risk and the most code for a one-person project.
+**B — accepted as [ADR-0017](../adr/0017-passwordless-email-sign-in.md).** ASP.NET Core
+Identity as the user store and session issuer, a one-time code emailed to the user as the
+only credential, no password column populated, and an `HttpOnly` cookie session. This keeps
+ADR-0010's T9 choice (Identity, cookie) intact while dropping the part of it that carries the
+most risk and the most code for a one-person project. C and E stay additive on the same user
+row if we ever want them.
 
 ## 6. Delivery outline
 
@@ -90,12 +94,16 @@ Three thin slices, in order, each shippable:
 Each PR closes its slice against `rekfar/docs#14`, `#15`, `#16` per the
 [traceability convention](../requirements/README.md).
 
-## 7. Open questions, for when we expand this
+## 7. What ADR-0017 settled, and what is still open
 
-- Session transport: cookie for the SPA, or JWT? ADR-0010 says "cookie/JWT" — pick one.
-- Which email sender on a free tier, and from which domain?
-- Code-in-email vs link-in-email (a code survives being opened on a different device).
-- Token lifetime, session length, and what "log out everywhere" means.
-- **If B is accepted, NFR-SEC-2 needs rewording** — it currently assumes stored passwords.
-- The chosen approach is written up as **ADR-0017 (T9 — Auth)** and this page becomes its
-  supporting comparison, the way [tech-stack-options.md](tech-stack-options.md) supports ADR-0010.
+Settled there: code-in-email over link-in-email, an `HttpOnly` cookie session rather than a
+bearer token, code lifetime and attempt caps, and that registration and login are one flow.
+NFR-SEC-2 and FR-ACC-1 have been reworded to match.
+
+Still open:
+
+- **Which transactional email provider**, on a free tier, in an EEA region, with
+  custom-domain SPF/DKIM. The one sub-decision ADR-0017 leaves for later.
+- **Session length**, and what "log out everywhere" should mean in the UI.
+- **FR-ACC-6** (reset a forgotten password) is moot as written but not yet retired — a
+  passwordless account still needs an answer to "I lost access to my email".

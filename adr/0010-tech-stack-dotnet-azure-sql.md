@@ -55,6 +55,10 @@ Adopt **Option A** for roadmap Phase 1:
 | T9 — Auth | ASP.NET Core Identity, email + password, cookie/JWT; OAuth addable later |
 | T10 — Observability | Structured logs plus a free-tier error tracker |
 
+> **Note (2026-09-05):** the **T9** row was subsequently refined by
+> [ADR-0017](0017-passwordless-email-sign-in.md) — Identity and the cookie session stand,
+> but sign-in is passwordless and no password is stored. The rest of this ADR is unchanged.
+
 Two constraints are part of this decision, not optional refinements:
 
 - **The domain layer uses NetTopologySuite geometry types, never provider-specific

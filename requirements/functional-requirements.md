@@ -18,7 +18,7 @@ never reused, never renumbered.
 
 | ID | Requirement | Priority |
 | --- | --- | --- |
-| FR-ACC-1 | A visitor can register an account (email + password, or OAuth). | M |
+| FR-ACC-1 | A visitor can register an account with their email address (passwordless; ADR-0017). | M |
 | FR-ACC-2 | A user can log in and log out securely. | M |
 | FR-ACC-3 | A user can view and edit their profile (display name, locale). | M |
 | FR-ACC-4 | A user can set a default privacy level; default is **private**. | M |
