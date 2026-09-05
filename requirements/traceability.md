@@ -14,8 +14,9 @@ standing constraint never closes. See
 
 | Status | Requirements |
 | --- | --- |
+| Retired | 1 |
 | Implemented | 2 |
-| Not started | 65 |
+| Not started | 64 |
 | Deferred | 6 |
 | **Total** | **73** |
 
@@ -23,7 +24,7 @@ standing constraint never closes. See
 
 | Group | Total | Implemented | In progress | Not started | Deferred |
 | --- | --- | --- | --- | --- | --- |
-| FR-ACC | 6 | 0 | 0 | 6 | 0 |
+| FR-ACC | 6 | 0 | 0 | 5 | 0 |
 | FR-ACT | 7 | 0 | 0 | 7 | 0 |
 | FR-BOOK | 6 | 0 | 0 | 6 | 0 |
 | FR-DATA | 4 | 0 | 0 | 4 | 0 |
@@ -61,7 +62,7 @@ standing constraint never closes. See
 
 ### FR-ACC-1
 
-A visitor can register an account (email + password, or OAuth).
+A visitor can register an account with their email address (passwordless; ADR-0017).
 
 | | |
 | --- | --- |
@@ -130,8 +131,8 @@ A user can reset a forgotten password.
 
 | | |
 | --- | --- |
-| Status | **Not started** |
-| Priority | S |
+| Status | **Retired** |
+| Priority | S — Retired (ADR-0017) |
 | Group | [FR-ACC](functional-requirements.md#account--profile-fr-acc--capability-c9) |
 | Capability | C9 |
 | Issue | [#19](https://github.com/rekfar/docs/issues/19) |
