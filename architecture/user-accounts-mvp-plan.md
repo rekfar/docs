@@ -16,8 +16,8 @@ the supporting comparison behind that decision, the way
 
 This is the whole of [UC-1](../use-cases/use-cases.md#uc-1--register-and-set-up-an-account)
 except FR-ACC-4 (default privacy), which is one column and a default value and is cheap to
-carry along. FR-ACC-5 (deletion) and FR-ACC-6 (password reset) stay out of this slice —
-though note that **the choice made here can remove FR-ACC-6 entirely**.
+carry along. FR-ACC-5 (deletion) stays out of this slice, and FR-ACC-6 (password reset) is **retired** —
+the choice made here removed it entirely.
 
 ## 2. What constrains the choice
 
@@ -105,5 +105,6 @@ Still open:
 - **Which transactional email provider**, on a free tier, in an EEA region, with
   custom-domain SPF/DKIM. The one sub-decision ADR-0017 leaves for later.
 - **Session length**, and what "log out everywhere" should mean in the UI.
-- **FR-ACC-6** (reset a forgotten password) is moot as written but not yet retired — a
-  passwordless account still needs an answer to "I lost access to my email".
+Closed rather than answered: **FR-ACC-6** (reset a forgotten password) is retired, and no
+requirement replaces it — losing the email address means losing the account
+([ADR-0017](../adr/0017-passwordless-email-sign-in.md)).

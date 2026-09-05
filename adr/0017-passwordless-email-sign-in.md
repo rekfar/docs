@@ -76,8 +76,8 @@ Postmark, and Brevo; current free-tier limits must be verified before committing
 
 - **A database leak exposes no credentials.** There is nothing to crack, reuse, or stuff.
 - **Work removed, not added:** no hashing policy, no strength meter, no reset flow, no
-  lockout tuning. **FR-ACC-6 (reset a forgotten password) no longer has meaning as
-  written** — see follow-ups.
+  lockout tuning. **FR-ACC-6 (reset a forgotten password) is retired** — with no password
+  there is nothing to reset, and requesting a fresh code *is* the recovery flow.
 - Registration and login are one screen and one endpoint pair, which is the shortest path
   to UC-1 and the least Norwegian UI copy to write.
 - NFR-SEC-2's password-hashing obligation is satisfied vacuously; the remaining obligation
@@ -94,8 +94,11 @@ Postmark, and Brevo; current free-tier limits must be verified before committing
 - **The inbox is the single point of compromise.** This is already true of any system with
   a password-reset flow; passwordless makes it explicit rather than worse.
 - **No recovery when the email account itself is lost.** With a password there is at least
-  a second factor of the user's memory. Accepted for Phase 1; a recovery path (a second
-  address, or a linked social provider) is a later requirement, not a password.
+  a second factor of the user's memory. **Losing the email address means losing the
+  account**, and this is accepted deliberately: no recovery requirement is being raised to
+  replace FR-ACC-6. For a hobby log whose data is exportable (P4) and whose account is three
+  fields, a recovery channel would be more machinery — and more identity-proofing risk —
+  than the loss it prevents. Revisit if real users hit it.
 - We depend on one more third-party service in the request path for sign-in
   (NFR-INTEG-2 spirit), on a free tier whose limits could change.
 
@@ -103,10 +106,12 @@ Postmark, and Brevo; current free-tier limits must be verified before committing
 
 - [ ] **NFR-SEC-2** reworded — it assumed stored passwords. *(done in this change)*
 - [ ] **FR-ACC-1** reworded — it said "email + password, or OAuth". *(done in this change)*
-- [ ] **FR-ACC-6** to be **retired** in `functional-requirements.md` and its issue closed by
-      hand, per the [requirements README](../requirements/README.md). Not done here: a
-      passwordless account still needs *some* answer to "I lost access to my email", and
-      that is a new requirement to word rather than an old one to delete silently.
+- [x] **FR-ACC-6** (reset a forgotten password) **retired** in `functional-requirements.md`
+      — the row stays, marked `Retired`, per the
+      [requirements README](../requirements/README.md). **No replacement requirement** is
+      raised for email-account recovery; see the trade-off above.
+- [ ] **Issue [#19](https://github.com/rekfar/docs/issues/19)** (FR-ACC-6) to be closed by
+      hand — `sync` reports an orphaned issue but does not close it.
 - [ ] Run `tools/traceability sync` for real after the FR-ACC-1 edit; the CI workflow only
       dry-runs it, so the issue body stays stale until someone does.
 - [ ] Choose the email provider and record it as a short ADR or an amendment here.
