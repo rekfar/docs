@@ -110,8 +110,8 @@ Postmark, and Brevo; current free-tier limits must be verified before committing
       — the row stays, marked `Retired`, per the
       [requirements README](../requirements/README.md). **No replacement requirement** is
       raised for email-account recovery; see the trade-off above.
-- [ ] **Issue [#19](https://github.com/rekfar/docs/issues/19)** (FR-ACC-6) to be closed by
-      hand — `sync` reports an orphaned issue but does not close it.
+- [x] **Issue [#19](https://github.com/rekfar/docs/issues/19)** (FR-ACC-6) closed by hand as
+      not planned — `sync` reports an orphaned issue but does not close it.
 - [ ] Run `tools/traceability sync` for real after the FR-ACC-1 edit; the CI workflow only
       dry-runs it, so the issue body stays stale until someone does.
 - [ ] Choose the email provider and record it as a short ADR or an amendment here.
