@@ -98,13 +98,16 @@ Each PR closes its slice against `rekfar/docs#14`, `#15`, `#16` per the
 
 Settled there: code-in-email over link-in-email, an `HttpOnly` cookie session rather than a
 bearer token, code lifetime and attempt caps, and that registration and login are one flow.
-NFR-SEC-2 and FR-ACC-1 have been reworded to match.
+NFR-SEC-2 and FR-ACC-1 have been reworded to match. ADR-0018 has since named the sender.
 
 Still open:
 
-- **Which transactional email provider**, on a free tier, in an EEA region, with
-  custom-domain SPF/DKIM. The one sub-decision ADR-0017 leaves for later.
 - **Session length**, and what "log out everywhere" should mean in the UI.
+
+Since settled: the sender is **Azure Communication Services Email**, on a verified custom
+domain in an EEA geography, authenticated by managed identity so there is no API key
+([ADR-0018](../adr/0018-acs-email-transactional-provider.md)).
+
 Closed rather than answered: **FR-ACC-6** (reset a forgotten password) is retired, and no
 requirement replaces it — losing the email address means losing the account
 ([ADR-0017](../adr/0017-passwordless-email-sign-in.md)).
