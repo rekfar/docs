@@ -65,10 +65,10 @@ store and session issuer as ADR-0010 chose.
    password sit on the same Identity user row if we ever want them. Nothing here forecloses
    them, and none is in Phase 1.
 
-**Open sub-decision:** which transactional email provider. Criteria are a genuinely free
-tier at hobby volume, an EEA-appropriate region (NFR-PRIV-5), and custom-domain SPF/DKIM
-so codes reach the inbox. Candidates include Azure Communication Services Email, Resend,
-Postmark, and Brevo; current free-tier limits must be verified before committing.
+**Sub-decision, since closed:** the transactional email provider is **Azure Communication
+Services Email**, sending from a verified custom domain in an EEA geography and
+authenticated by managed identity so no API key exists —
+[ADR-0018](0018-acs-email-transactional-provider.md).
 
 ## Consequences
 
@@ -114,7 +114,7 @@ Postmark, and Brevo; current free-tier limits must be verified before committing
       not planned — `sync` reports an orphaned issue but does not close it.
 - [ ] Run `tools/traceability sync` for real after the FR-ACC-1 edit; the CI workflow only
       dry-runs it, so the issue body stays stale until someone does.
-- [ ] Choose the email provider and record it as a short ADR or an amendment here.
+- [x] Email provider chosen and recorded as [ADR-0018](0018-acs-email-transactional-provider.md).
 
 ## Alternatives
 

@@ -37,6 +37,7 @@ Each ADR uses this structure:
 | [0015](0015-ingestion-lives-in-the-database-repository.md) | Reference-data ingestion lives in the database repository | Accepted |
 | [0016](0016-ssr-general-use-distribution.md) | The peak import reads the general-use Stedsnavn distribution | Accepted |
 | [0017](0017-passwordless-email-sign-in.md) | Auth (T9): passwordless email sign-in, no stored passwords | Accepted |
+| [0018](0018-acs-email-transactional-provider.md) | Sign-in email is sent by Azure Communication Services Email | Accepted |
 
 ## Adding a new ADR
 

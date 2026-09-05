@@ -97,8 +97,10 @@ build/test/deploy and can also schedule the reference-data ingestion job (T-cron
 **Decided — [ADR-0017](../adr/0017-passwordless-email-sign-in.md):** ASP.NET Core Identity
 as the user store and session issuer, with a **one-time code emailed to the user** as the
 only credential. **No passwords are stored.** Social OAuth and passkeys remain additive
-options on the same user row. The open sub-decision is the transactional email provider.
-Must support account deletion/export (P9/P4).
+options on the same user row. The codes are sent by **Azure Communication Services Email**
+from a verified custom domain, authenticated by managed identity
+([ADR-0018](../adr/0018-acs-email-transactional-provider.md)). Must support account
+deletion/export (P9/P4).
 
 ### T11 — Kartverket reference-data integration
 
@@ -168,6 +170,4 @@ Tracked as deferred ADRs and in the [roadmap](06-roadmap.md):
 - **T5 map provider/renderer** — [ADR-0006](../adr/0006-map-provider-deferred.md).
 - **T11 Kartverket refresh cadence & delta handling** — [ADR-0012](../adr/0012-kartverket-primary-source.md).
 - **T12 activity providers** (Strava first, Garmin later) — [ADR-0008](../adr/0008-activity-tracking-integrations.md).
-- **T9 transactional email provider** — the one sub-decision left open by
-  [ADR-0017](../adr/0017-passwordless-email-sign-in.md).
 - **T3 exact engine/host, T7 hosting** — to be recorded when chosen.
