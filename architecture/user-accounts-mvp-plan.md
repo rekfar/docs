@@ -86,23 +86,47 @@ Three thin slices, in order, each shippable:
 
 1. **`database`** — `auth` schema: user table (id, email, email-confirmed, display name,
    locale, default privacy, timestamps) plus Identity's token/login tables, in the DACPAC.
-2. **`backend`** — `/v1/auth` (request code, verify, sign out) and `/v1/me` (read, update
-   profile); authentication required on every user-data endpoint; rate limiting on the
-   request-code endpoint (NFR-SEC-4).
-3. **`webapp`** — Norwegian sign-in screen, the "check your email" state, and a profile page.
+2. **`backend`** — `/v1/auth` (request code, verify, sign out, sign out everywhere) and
+   `/v1/me` (read, update profile); authentication required on every user-data endpoint;
+   rate limiting on the request-code endpoint (NFR-SEC-4).
+3. **`webapp`** — Norwegian sign-in screen, the "check your email" state, and a profile page
+   carrying both sign-out actions.
 
 Each PR closes its slice against `rekfar/docs#14`, `#15`, `#16` per the
 [traceability convention](../requirements/README.md).
 
-## 7. What ADR-0017 settled, and what is still open
+## 7. Session lifetime and revocation
+
+Passwordless changes the economics of session length. With a password, an expired session
+costs the user a form they can fill from memory; here it costs an **email round-trip** —
+latency, a spam folder, and a device that may not have the inbox on it. Short sessions would
+convert routine use into a delivery gamble, so the session is long and revocation is
+explicit rather than time-based:
+
+| | Setting | Why |
+| --- | --- | --- |
+| **Session** | Persistent cookie, **90-day sliding expiry**, renewed on use | Someone who logs a trip a month never signs in twice; an abandoned account falls out after a quarter of silence. |
+| **Absolute cap** | **None in Phase 1** | Identity gives sliding expiry for free; an absolute cap on top of it means storing an issued-at claim and checking it by hand. Not worth the code here ([P7](principles.md#p7-simple-before-clever)) — revisit if the data ever gets more sensitive than trip logs. |
+| **Revocation latency** | Security-stamp validation every **5 minutes** | The window in which a revoked session still works. Traffic is tiny, so the extra store round-trips cost nothing. |
+| **Sign-in code** | ~10 minutes, single-use ([ADR-0017](../adr/0017-passwordless-email-sign-in.md)) | A different clock entirely — how long the *code* lives, not the session. |
+
+**"Log out everywhere" ships in the MVP**, not later. In a passwordless account it is not a
+convenience: rotating the security stamp is the *only* lever a user has over a lost or stolen
+device, because there is no password to change. It is also nearly free — one call to
+`UpdateSecurityStampAsync` — so the profile page offers both **"Logg ut"** (this device) and
+**"Logg ut på alle enheter"** (everywhere). That satisfies FR-ACC-2's "securely" in the only
+way this design can.
+
+There is no device or session list in Phase 1. Naming the sessions you want to keep needs
+per-session records and a UI to show them; the blunt version answers the emergency, which is
+what matters.
+
+## 8. Where the decisions live
 
 Settled there: code-in-email over link-in-email, an `HttpOnly` cookie session rather than a
 bearer token, code lifetime and attempt caps, and that registration and login are one flow.
-NFR-SEC-2 and FR-ACC-1 have been reworded to match. ADR-0018 has since named the sender.
-
-Still open:
-
-- **Session length**, and what "log out everywhere" should mean in the UI.
+NFR-SEC-2 and FR-ACC-1 have been reworded to match. ADR-0018 has since named the sender, and
+§7 above settles the session clock — the last question this plan was carrying.
 
 Since settled: the sender is **Azure Communication Services Email**, on a verified custom
 domain in an EEA geography, authenticated by managed identity so there is no API key
