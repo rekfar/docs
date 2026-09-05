@@ -40,7 +40,7 @@ they hold belongs. See [ADR-0014](../adr/0014-requirements-traceability.md).
 | ID | Requirement |
 | --- | --- |
 | NFR-SEC-1 | All traffic is over HTTPS/TLS. |
-| NFR-SEC-2 | Passwords are stored using a strong, salted hashing algorithm; secrets are never committed to the repository. |
+| NFR-SEC-2 | No user passwords are stored ([ADR-0017](../adr/0017-passwordless-email-sign-in.md)). Sign-in codes are single-use, short-lived, and never held in recoverable form; any credential ever stored uses a strong, salted hashing algorithm. Secrets are never committed to the repository. |
 | NFR-SEC-3 | User-data endpoints require authentication and enforce per-user access control. |
 | NFR-SEC-4 | Public endpoints are rate-limited and validate all input. |
 | NFR-SEC-5 | Dependencies are kept reasonably up to date; known-vulnerable versions are avoided. |

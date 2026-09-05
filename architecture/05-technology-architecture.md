@@ -20,7 +20,7 @@ candidates, without committing.
 | T6 | Geospatial libraries | GPX parsing, geometry, coordinate transforms, ascent calc | Deferred |
 | T7 | Hosting / platform | Where T1–T4 run | Deferred |
 | T8 | CI/CD & source control | Build, test, deploy | GitHub (chosen for the repo) |
-| T9 | Auth mechanism | Sessions/tokens, password or OAuth login | Deferred |
+| T9 | Auth mechanism | Sessions/tokens, passwordless email sign-in | Chosen (ADR-0017) |
 | T10 | Observability | Logs + basic error tracking | Deferred |
 | T11 | Kartverket reference-data integration | Source core places (peaks/routes/cabins) + elevation | Datasets chosen (ADR-0012); refresh cadence open |
 | T12 | Activity-service integration | OAuth + webhooks/polling for Strava (later Garmin) | Provider(s) deferred (ADR-0008) |
@@ -94,8 +94,11 @@ build/test/deploy and can also schedule the reference-data ingestion job (T-cron
 
 ### T9 — Auth
 
-Email+password with proper hashing, or OAuth via a provider, or a managed auth
-service with a free tier. Must support account deletion/export (P9/P4).
+**Decided — [ADR-0017](../adr/0017-passwordless-email-sign-in.md):** ASP.NET Core Identity
+as the user store and session issuer, with a **one-time code emailed to the user** as the
+only credential. **No passwords are stored.** Social OAuth and passkeys remain additive
+options on the same user row. The open sub-decision is the transactional email provider.
+Must support account deletion/export (P9/P4).
 
 ### T11 — Kartverket reference-data integration
 
@@ -165,4 +168,6 @@ Tracked as deferred ADRs and in the [roadmap](06-roadmap.md):
 - **T5 map provider/renderer** — [ADR-0006](../adr/0006-map-provider-deferred.md).
 - **T11 Kartverket refresh cadence & delta handling** — [ADR-0012](../adr/0012-kartverket-primary-source.md).
 - **T12 activity providers** (Strava first, Garmin later) — [ADR-0008](../adr/0008-activity-tracking-integrations.md).
-- **T3 exact engine/host, T7 hosting, T9 auth** — to be recorded when chosen.
+- **T9 transactional email provider** — the one sub-decision left open by
+  [ADR-0017](../adr/0017-passwordless-email-sign-in.md).
+- **T3 exact engine/host, T7 hosting** — to be recorded when chosen.

@@ -43,7 +43,8 @@ it exercises.
 ### UC-1 — Register and set up an account
 
 - **Actor:** Visitor → Hiker. **Goal:** Get an account, private by default.
-- **Flow:** Register (email/OAuth) → confirm → set display name and locale (nb-NO) →
+- **Flow:** Enter email → receive and enter the one-time code (this confirms the address
+  and creates the account) → set display name and locale (nb-NO) →
   default privacy = private → land on the map/overview.
 - **Requirements:** FR-ACC-1..4, FR-I18N-1, NFR-PRIV-1.
 
