@@ -18,6 +18,7 @@ add clarity and skip the heavy governance ceremony.
 | D — Technology Architecture | Platform, hosting, and technology building blocks | [architecture/05-technology-architecture.md](architecture/05-technology-architecture.md) |
 | D — Technology Architecture (supporting) | Three concrete candidate stacks compared, as input to ADR-0005 | [architecture/tech-stack-options.md](architecture/tech-stack-options.md) |
 | E/F — Opportunities, Solutions & Migration | Roadmap and phased delivery | [architecture/06-roadmap.md](architecture/06-roadmap.md) |
+| E/F — Opportunities & Solutions (supporting) | Approaches compared for MVP user accounts (FR-ACC-1..3), as input to the T9 auth ADR | [architecture/user-accounts-mvp-plan.md](architecture/user-accounts-mvp-plan.md) |
 | Requirements Management | Functional and non-functional requirements (central to all phases) | [requirements/](requirements/) |
 | Requirements Management | How a requirement traces to the issue, PR, and commit that implement it | [requirements/README.md](requirements/README.md) |
 | — (supporting) | Concrete user-facing behaviour | [use-cases/use-cases.md](use-cases/use-cases.md) |
