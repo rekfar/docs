@@ -14,9 +14,10 @@ standing constraint never closes. See
 
 | Status | Requirements |
 | --- | --- |
+| Closed, no merged PR | 1 |
 | Retired | 1 |
 | Implemented | 2 |
-| Not started | 64 |
+| Not started | 63 |
 | Deferred | 6 |
 | **Total** | **73** |
 
@@ -24,7 +25,7 @@ standing constraint never closes. See
 
 | Group | Total | Implemented | In progress | Not started | Deferred |
 | --- | --- | --- | --- | --- | --- |
-| FR-ACC | 6 | 0 | 0 | 5 | 0 |
+| FR-ACC | 6 | 0 | 0 | 4 | 0 |
 | FR-ACT | 7 | 0 | 0 | 7 | 0 |
 | FR-BOOK | 6 | 0 | 0 | 6 | 0 |
 | FR-DATA | 4 | 0 | 0 | 4 | 0 |
@@ -66,7 +67,7 @@ A visitor can register an account with their email address (passwordless; ADR-00
 
 | | |
 | --- | --- |
-| Status | **Not started** |
+| Status | **Closed, no merged PR** |
 | Priority | M |
 | Group | [FR-ACC](functional-requirements.md#account--profile-fr-acc--capability-c9) |
 | Capability | C9 |
