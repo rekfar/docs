@@ -14,10 +14,9 @@ standing constraint never closes. See
 
 | Status | Requirements |
 | --- | --- |
-| Closed, no merged PR | 1 |
 | Retired | 1 |
-| Implemented | 2 |
-| Not started | 63 |
+| Implemented | 5 |
+| Not started | 61 |
 | Deferred | 6 |
 | **Total** | **73** |
 
@@ -25,7 +24,7 @@ standing constraint never closes. See
 
 | Group | Total | Implemented | In progress | Not started | Deferred |
 | --- | --- | --- | --- | --- | --- |
-| FR-ACC | 6 | 0 | 0 | 4 | 0 |
+| FR-ACC | 6 | 3 | 0 | 2 | 0 |
 | FR-ACT | 7 | 0 | 0 | 7 | 0 |
 | FR-BOOK | 6 | 0 | 0 | 6 | 0 |
 | FR-DATA | 4 | 0 | 0 | 4 | 0 |
@@ -43,7 +42,7 @@ standing constraint never closes. See
 
 | Use case | Requirements | Implemented |
 | --- | --- | --- |
-| [UC-1](../use-cases/use-cases.md) Register and set up an account | 5 | 0 / 5 |
+| [UC-1](../use-cases/use-cases.md) Register and set up an account | 5 | 3 / 5 |
 | [UC-2](../use-cases/use-cases.md) Log a completed summit trip (turføring) | 10 | 0 / 10 |
 | [UC-3](../use-cases/use-cases.md) Plan a future trip (turplanlegging) | 5 | 1 / 5 |
 | [UC-4](../use-cases/use-cases.md) Build a wishlist / bucket list (ønskeliste) | 5 | 0 / 5 |
@@ -67,12 +66,15 @@ A visitor can register an account with their email address (passwordless; ADR-00
 
 | | |
 | --- | --- |
-| Status | **Closed, no merged PR** |
+| Status | **Implemented** |
 | Priority | M |
 | Group | [FR-ACC](functional-requirements.md#account--profile-fr-acc--capability-c9) |
 | Capability | C9 |
 | Use cases | UC-1 |
 | Issue | [#14](https://github.com/rekfar/docs/issues/14) |
+| Pull requests | [rekfar/webapp#14](https://github.com/rekfar/webapp/pull/14) |
+| Merged | 2026-11-17 |
+| Commit | [`6252608`](https://github.com/rekfar/webapp/commit/625260854f9ba0fb0c2849277c33cb193aab7e29) |
 
 ### FR-ACC-2
 
@@ -80,12 +82,15 @@ A user can log in and log out securely.
 
 | | |
 | --- | --- |
-| Status | **Not started** |
+| Status | **Implemented** |
 | Priority | M |
 | Group | [FR-ACC](functional-requirements.md#account--profile-fr-acc--capability-c9) |
 | Capability | C9 |
 | Use cases | UC-1 |
 | Issue | [#15](https://github.com/rekfar/docs/issues/15) |
+| Pull requests | [rekfar/webapp#14](https://github.com/rekfar/webapp/pull/14) |
+| Merged | 2026-11-17 |
+| Commit | [`6252608`](https://github.com/rekfar/webapp/commit/625260854f9ba0fb0c2849277c33cb193aab7e29) |
 
 ### FR-ACC-3
 
@@ -93,12 +98,15 @@ A user can view and edit their profile (display name, locale).
 
 | | |
 | --- | --- |
-| Status | **Not started** |
+| Status | **Implemented** |
 | Priority | M |
 | Group | [FR-ACC](functional-requirements.md#account--profile-fr-acc--capability-c9) |
 | Capability | C9 |
 | Use cases | UC-1 |
 | Issue | [#16](https://github.com/rekfar/docs/issues/16) |
+| Pull requests | [rekfar/webapp#14](https://github.com/rekfar/webapp/pull/14) |
+| Merged | 2026-11-17 |
+| Commit | [`6252608`](https://github.com/rekfar/webapp/commit/625260854f9ba0fb0c2849277c33cb193aab7e29) |
 
 ### FR-ACC-4
 
