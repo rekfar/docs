@@ -1,10 +1,10 @@
 # User accounts — MVP plan (FR-ACC-1..3)
 
-**Status:** Decided — **approach B** was chosen and recorded as
-[ADR-0017](../adr/0017-passwordless-email-sign-in.md), which closes **T9 — Auth**
-([technology architecture §T9](05-technology-architecture.md#t9--auth)). This page remains
-the supporting comparison behind that decision, the way
-[tech-stack-options.md](tech-stack-options.md) supports ADR-0010.
+**Status:** **Delivered** (2026-11-17). Approach B was chosen and recorded as
+[ADR-0017](../adr/0017-passwordless-email-sign-in.md), closing **T9 — Auth**
+([technology architecture §T9](05-technology-architecture.md#t9--auth)), and all three
+slices have shipped — see §6. This page remains the supporting comparison behind that
+decision, the way [tech-stack-options.md](tech-stack-options.md) supports ADR-0010.
 
 ## 1. What we are building
 
@@ -94,6 +94,20 @@ Three thin slices, in order, each shippable:
 
 Each PR closes its slice against `rekfar/docs#14`, `#15`, `#16` per the
 [traceability convention](../requirements/README.md).
+
+**All three shipped**, in that order:
+
+| Slice | Landed as | Merged |
+| --- | --- | --- |
+| `database` | [rekfar/database#7](https://github.com/rekfar/database/pull/7) — the schema refuses a stored password | 2026-09-05 |
+| `backend` | [rekfar/backend#9](https://github.com/rekfar/backend/pull/9) — the `Rekfar.Accounts` module, later finished by [#12](https://github.com/rekfar/backend/pull/12) and [#13](https://github.com/rekfar/backend/pull/13) once the sending domain was verified | 2026-09-06 … 2026-11-17 |
+| `webapp` | [rekfar/webapp#14](https://github.com/rekfar/webapp/pull/14) — sign-in and profile screens, plus routing, i18n and session state | 2026-11-17 |
+
+Two gaps are known and tracked in the code repositories rather than here: the API's CORS
+policy has no `.AllowCredentials()`, which only affects a cross-origin caller such as a
+future native client (the proxied web path is same-origin and unaffected), and a cold start
+can still fail at Netlify's edge before the scaled-to-zero API and auto-paused database
+wake up.
 
 ## 7. Session lifetime and revocation
 

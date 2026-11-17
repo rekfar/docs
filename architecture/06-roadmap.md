@@ -26,7 +26,10 @@ Norwegian summit trips — then grow it. Each phase should leave a working produ
 
 Scope:
 
-- Account: register, log in, profile, privacy default = private (FR-ACC).
+- Account: register, log in, profile, privacy default = private (FR-ACC). **Done** —
+  passwordless email sign-in (FR-ACC-1..3), delivered 2026-11-17 across all three
+  repositories; see the [accounts MVP plan](user-accounts-mvp-plan.md). FR-ACC-4 (default
+  privacy, a column the profile screen does not yet expose) and FR-ACC-5 (deletion) remain.
 - Map: Kartverket topographic base map, pan/zoom (FR-MAP).
 - Peak catalogue: Norwegian **mountain tops (fjelltopper)** sourced from **Kartverket**
   (SSR names/coordinates + DTM-derived elevation), each with a stable Kartverket
