@@ -68,31 +68,28 @@ label, and the plan has to carry these differences explicitly:
 ## 3. Data model (`rekfar/database`, `app` schema)
 
 Per [ADR-0013](../adr/0013-schema-owned-by-sql-database-project.md) the tables are declared
-in the SQL Database Project, beside `app.User`.
+in the SQL Database Project. **Most of this already exists there:** `app.Trip` and
+`app.TripPeak` were laid down with the original two-value status, alongside an
+`app.DiaryNote` table. The slice is therefore a change, not a creation
+([rekfar/database#8](https://github.com/rekfar/database/issues/8)):
 
-**`app.Trip`**
-
-| Column | Type | Rule |
+| Object | Today | After |
 | --- | --- | --- |
-| `Id` | guid | `app`-schema convention |
-| `UserId` | guid | FK `app.User`; every query filters on it |
-| `Status` | `wishlist` / `planned` / `completed` | `CHECK`; not null |
-| `Type` | `fottur` / `topptur` | not null; defaults to `topptur` when created from a peak |
-| `TripDate` | date, nullable | `completed` ⇒ required; `wishlist` ⇒ null; `planned` ⇒ optional target date |
-| `AscentMeters` | int, nullable | ≥ 0 |
-| `Difficulty` | `enkel` / `middels` / `krevende` / `ekspert`, nullable | |
-| `Conditions` | short text, nullable | føre |
-| `Notes` | text, nullable | the private diary note — never shared, whatever `Privacy` says ([ADR-0020](../adr/0020-diary-note-is-trip-notes.md)) |
-| `Privacy` | as `app.User.DefaultPrivacy` | copied from the user's default at creation; not exposed until sharing exists |
-| `CreatedAt`, `UpdatedAt` | datetime2 | schema convention |
+| `app.Trip.[Status]` | `planned` / `completed` | `wishlist` / `planned` / `completed` |
+| `app.Trip.[Date]` | `completed` ⇒ required (`CK_app_Trip_CompletedHasDate`) | also `wishlist` ⇒ null (new `CK_app_Trip_WishlistHasNoDate`); `planned` ⇒ optional target date |
+| `app.Trip.Notes` | free text beside a separate diary table | the private diary note — never shared, whatever `Privacy` says ([ADR-0020](../adr/0020-diary-note-is-trip-notes.md)) |
+| `app.DiaryNote` | exists, unused | dropped |
+| `app.TripPeak` | `TripId`, `PeakId` (bigint FK to `[ref].Peak`, no cascade) | unchanged |
 
-**`app.TripPeak`** — `TripId`, `PeakId` (bigint FK to `[ref].Peak`), `Ordinal`; primary key
-`(TripId, PeakId)`. A join table rather than a column because FR-LOG-2 says "one or more"
-and a traverse bags several. `[ref].Peak` already keeps retired rows (`IsActive = 0`), so the
-foreign key survives an upstream deletion.
+The rest of `app.Trip` stays as it is: guid `Id`, `UserId` cascading from `app.User`,
+`[Type]` (`fottur` / `topptur`), `AscentMeters`, `Difficulty`, `Conditions`, `Privacy`
+(default `private`), `CreatedAt`, `UpdatedAt`, and the index on `(UserId, [Date])`.
+`TripPeak` is a join table because FR-LOG-2 says "one or more" and a traverse bags several;
+`[ref].Peak` keeps retired rows (`IsActive = 0`), so the foreign key survives an upstream
+deletion.
 
-Indexes: `Trip (UserId, Status, TripDate)` for the lists, `TripPeak (PeakId)` for "my
-history on this peak".
+"At most one wish per user and peak" spans both tables, so no constraint can express it;
+the API enforces it.
 
 No `Track`, `Route` or `Photo` tables — those arrive with FR-DATA-1, FR-PLAN-6 and FR-LOG-5.
 
@@ -162,7 +159,7 @@ the web client is split so the Must (UC-2) ships before the Shoulds.
 | # | Repository | Issue | Slice | Closes |
 | --- | --- | --- | --- | --- |
 | 0 | `docs` | — | **Done.** [ADR-0019](../adr/0019-trip-lifecycle-status.md) — a trip has one lifecycle (`wishlist → planned → completed`) — and [ADR-0020](../adr/0020-diary-note-is-trip-notes.md) — the diary note is the trip's notes field. The [roadmap](06-roadmap.md) moved the wishlist from Phase 2 into Phase 1. The data architecture dropped `WISHLIST_ITEM` and `DIARY_NOTE` and gained the three-value status; the application architecture folded the Wishlist module into Trip and dropped `/plans`, `/wishlist` and `/trips/{id}/notes`. No requirement IDs or wording changed. | — |
-| 1 | `database` | *not yet created* | `app.Trip`, `app.TripPeak`, constraints, indexes; smoke test | — |
+| 1 | `database` | [rekfar/database#8](https://github.com/rekfar/database/issues/8) | Add `wishlist` to `app.Trip.[Status]` with its no-date rule; drop `app.DiaryNote`; smoke tests and schema docs | — |
 | 2 | `backend` | [rekfar/backend#14](https://github.com/rekfar/backend/issues/14) | `Rekfar.Trips` module: CRUD, lifecycle rules, `/v1/stats` | — |
 | 3 | `backend` | [rekfar/backend#15](https://github.com/rekfar/backend/issues/15) | `GET /v1/peaks/search`, `GET /v1/peaks/{id}` | — |
 | 4 | `webapp` | [rekfar/webapp#15](https://github.com/rekfar/webapp/issues/15) | **UC-2:** peak search, log a completed trip from the popup, `/turer` list with edit and delete, bagged style on the map, trip detail, totals | FR-LOG-1..4, 6..8, FR-BOOK-1..2, FR-STAT-1, FR-PEAK-1 |
@@ -192,10 +189,3 @@ All four questions this plan first carried were answered on 2026-11-18.
    idempotent. The schema allows more, leaving room for FR-PLAN-4's "trip idea".
 4. **The real catalogue is in place.** `[ref].Peak` holds the imported Kartverket peaks, so
    trips point at real rows from the first slice and nothing here waits on ingestion.
-
-## 9. Caveat on this plan
-
-It was written from this repository and from the current `backend` and `webapp` code. The
-`database` repository was not read, so §3 follows what the backend's mappings imply about
-its conventions (guid keys in `app`, bigint in `ref`); check it against
-`database/docs/conventions.md` before slice 1.
