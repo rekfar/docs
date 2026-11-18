@@ -10,7 +10,7 @@ database technology is assumed (that is deferred; see
 
 | Kind | Owner | Examples | Notes |
 | --- | --- | --- | --- |
-| **User data** | The user | Account, trips (done/planned), wishlist, tracks, **private diary notes**, public **guestbook posts**, **connected services** & imported **activities**, photos (later), stats | Private by default (P9); portable (P4). |
+| **User data** | The user | Account, trips (wishlist/planned/completed), tracks, **private diary notes**, public **guestbook posts**, **connected services** & imported **activities**, photos (later), stats | Private by default (P9); portable (P4). |
 | **Reference data** | External providers, cached by us | Mountain tops, routes, **cabins (hytter)**, place names, elevation — sourced from **Kartverket** | Read-mostly; ingested and refreshed (capability C12). Each record keeps its Kartverket id, source dataset, and fetch date. Attribution required (P3). |
 
 Keeping these separate matters: reference data can be rebuilt from sources; user data
@@ -21,12 +21,10 @@ is irreplaceable and must be backed up and exportable.
 ```mermaid
 erDiagram
     USER ||--o{ TRIP : logs
-    USER ||--o{ WISHLIST_ITEM : keeps
-    TRIP }o--o{ PEAK : "summits (0..n)"
+    TRIP }o--o{ PEAK : "targets / summits (0..n)"
     TRIP ||--o{ PHOTO : has
     TRIP ||--o| TRACK : "has recorded"
     TRIP }o--o| ROUTE : "follows (planned)"
-    WISHLIST_ITEM }o--|| PEAK : targets
     PEAK }o--o| AREA : "located in"
     TRAIL }o--o{ PEAK : "connects / reaches"
     TRAIL }o--o| AREA : "located in"
@@ -40,13 +38,13 @@ erDiagram
     }
     TRIP {
         id id
-        enum status "planned | completed"
+        enum status "wishlist | planned | completed"
         enum type "fottur | topptur"
-        date date
+        date date "required when completed, none on wishlist"
         int ascentMeters
         enum difficulty "enkel|middels|krevende|ekspert"
         string conditions
-        string notes
+        string notes "private diary note, never shared"
         enum privacy
     }
     PEAK {
@@ -86,21 +84,23 @@ erDiagram
         string name
         enum kind "kommune|region|fjellomrade"
     }
-    WISHLIST_ITEM {
-        id id
-        datetime addedAt
-        string notes
-    }
 ```
 
 ## 3. Key entities
 
 - **User (bruker):** account, display name, email, locale (`nb-NO` first),
   default privacy. Minimal by design (P9).
-- **Trip (tur):** the central entity. A `status` of `planned` or `completed`
-  unifies planning and logging — a plan becomes a log by changing status and adding
-  outcome data. `type` distinguishes a hike (*fottur*) from a summit trip (*topptur*).
+- **Trip (tur):** the central entity. A `status` of `wishlist`, `planned` or `completed`
+  unifies the wishlist, planning and logging — a wish becomes a plan, and a plan a log, by
+  changing status and adding data ([ADR-0019](../adr/0019-trip-lifecycle-status.md)).
+  `type` distinguishes a hike (*fottur*) from a summit trip (*topptur*).
   A trip may reference 0..n **peaks** (a traverse can bag several).
+  - **Fields follow the status.** A `completed` trip requires a date; a `wishlist` trip has
+    none (with a date it is a plan); ascent, difficulty and conditions describe an outcome.
+  - **Only `completed` counts.** A peak is **bagged (toppet)** when a completed trip
+    references it — derived, never stored — and statistics read completed trips only.
+  - **A peak's state is derived from its trips**, by precedence: completed, else planned,
+    else wishlist. The same peak can be bagged and planned again.
 - **Peak (fjelltopp):** reference data — name, location, and `ssrId` (the SSR
   `stedsnummer`) from the place-name register; elevation (moh.) **derived** by sampling
   Kartverket's DTM at that point; optional prominence (*primærfaktor*). Which SSR points
@@ -111,25 +111,28 @@ erDiagram
   `Sykkelrute`, `AnnenRute`).
 - **Track (spor):** the user's actual recorded line, typically from an imported GPX;
   distinct from the planned **Route (rute)**.
-- **Photo (bilde), Note (notat):** user content attached to a trip.
+- **Private diary note (dagboknotat / notat):** not an entity. It is the trip's `notes`
+  field — one free-text note per trip, visible only to its author and never published,
+  whatever the trip's `privacy` ([ADR-0020](../adr/0020-diary-note-is-trip-notes.md)).
+- **Photo (bilde):** user content attached to a trip.
 - **Area (område):** administrative or natural grouping (municipality *kommune*,
   region, mountain area *fjellområde*) used for filtering and stats.
-- **Wishlist item (ønskeliste):** a peak (or trip idea) the user wants to do.
+- **Wishlist (ønskeliste):** not an entity. It is the user's trips with status `wishlist`,
+  at most one per peak — a set, where completed trips are a log.
 
 ### 3b. Additional entities (external references, activities, guestbook, connections)
 
 These extend the model for the features in
 [ADR-0012](../adr/0012-kartverket-primary-source.md),
 [ADR-0008](../adr/0008-activity-tracking-integrations.md), and
-[ADR-0009](../adr/0009-private-and-public-logbook.md).
+[ADR-0009](../adr/0009-private-and-public-logbook.md) (the public half; the private half
+is `TRIP.notes`, above).
 
 ```mermaid
 erDiagram
-    USER ||--o{ DIARY_NOTE : writes
     USER ||--o{ CONNECTED_SERVICE : links
     CONNECTED_SERVICE ||--o{ ACTIVITY : imports
     ACTIVITY ||--o| TRIP : "produces / attaches to"
-    TRIP ||--o{ DIARY_NOTE : "has (private)"
     USER ||--o{ GUESTBOOK_ENTRY : posts
     PEAK ||--o{ GUESTBOOK_ENTRY : "shown on"
     CABIN ||--o{ GUESTBOOK_ENTRY : "shown on"
@@ -145,12 +148,6 @@ erDiagram
         string owner "DNT|Statskog|Fjellstyre|annen"
         enum kind "betjent|selvbetjent|ubetjent"
         string utnoUrl "optional link, nullable"
-    }
-    DIARY_NOTE {
-        id id
-        string text
-        datetime createdAt
-        enum visibility "private"
     }
     GUESTBOOK_ENTRY {
         id id
@@ -190,9 +187,10 @@ Key points:
 - **Cabin attributes come straight from N50:** `kind` is N50's `betjeningsgrad`
   (`betjent` / `selvbetjent` / `ubetjent`) and `owner` is its `eier`
   (DNT / Statskog / Fjellstyre / annen).
-- **Two-tier logbook:** **`DIARY_NOTE`** is always **private** to its author and belongs
-  to a trip; **`GUESTBOOK_ENTRY`** is **public** and belongs to a place (peak/cabin/
-  route). The `visibility` values are fixed and never cross over
+- **Two-tier logbook:** the private tier is the trip's **`notes`** field — always
+  **private** to its author ([ADR-0020](../adr/0020-diary-note-is-trip-notes.md)); the
+  public tier is **`GUESTBOOK_ENTRY`**, which belongs to a place (peak/cabin/route). They
+  are different fields on different entities, so one can never become the other
   ([ADR-0009](../adr/0009-private-and-public-logbook.md)).
 - **Activity import:** a **`CONNECTED_SERVICE`** (Strava/Garmin) imports **`ACTIVITY`**
   records; an activity may produce or attach to a `TRIP`, with `matchStatus` capturing
@@ -249,8 +247,8 @@ routes — plus the topographic base map. See
 - Trips are **private by default**; sharing is explicit and per-trip (P9).
 - Location data (home trailheads, frequented peaks) is sensitive — treat it as
   personal data under GDPR.
-- **Private diary notes are never public**; only explicit **guestbook greetings** are,
-  and the two are kept separate in the model
+- **Private diary notes (a trip's `notes`) are never public**; only explicit **guestbook
+  greetings** are, and the two are kept separate in the model
   ([ADR-0009](../adr/0009-private-and-public-logbook.md)). Public content is moderatable.
 - **Connected services** (Strava/Garmin) are **opt-in**; imported activities are private
   by default, and a user can disconnect and delete imported data

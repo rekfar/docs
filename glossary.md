@@ -20,7 +20,7 @@ the Norwegian name is authoritative.
 | Trip log / logbook | **turloggbok** | The personal record of trips — the domain concept Rekfar is built around. |
 | Log entry | **turføring / loggføring** | A single recorded trip in the logbook. |
 | Trip plan / planned trip | **turplan / planlagt tur** | A future trip the user intends to do. |
-| Wishlist / bucket list | **ønskeliste** | Collection of peaks or trips the user wants to do. |
+| Wishlist / bucket list | **ønskeliste** | The peaks or trips the user wants to do — modelled as trips with status `wishlist`, not as a separate list. |
 | Peak bagging | **toppjakt / topplogging** | Collecting summits as an activity; ticking off peaks. |
 | Track / GPS track | **spor (GPS-spor)** | The recorded line of where the user actually went. |
 | Route (planned line) | **rute / trasé** | The intended line of a trip, distinct from the recorded track. |
@@ -88,7 +88,7 @@ colour-coded scale for marked trails, with room for a climbing/alpine grade late
 | Note / description | **notat / beskrivelse** | Free-text notes on a trip. |
 | Import (GPX) | **import (GPX)** | Loading a GPS track file into the app. |
 | Export | **eksport** | Saving user data out of the app. |
-| Private diary note | **dagboknotat** | A personal, private note on a trip, visible only to its author. |
+| Private diary note | **dagboknotat** | A personal, private note on a trip, visible only to its author — the trip's notes field, one per trip. |
 | Public guestbook | **gjestebok** | A public book of greetings attached to a summit, cabin, or route (the Norwegian mountain guestbook tradition). |
 | Greeting (guestbook entry) | **gjestebokhilsen / hilsen** | A short public message a user posts to a place's guestbook when they visit. |
 | Activity import | **aktivitetsimport** | Bringing in a recorded activity from a connected GPS service (e.g. Strava). |

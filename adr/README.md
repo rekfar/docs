@@ -38,6 +38,8 @@ Each ADR uses this structure:
 | [0016](0016-ssr-general-use-distribution.md) | The peak import reads the general-use Stedsnavn distribution | Accepted |
 | [0017](0017-passwordless-email-sign-in.md) | Auth (T9): passwordless email sign-in, no stored passwords | Accepted |
 | [0018](0018-acs-email-transactional-provider.md) | Sign-in email is sent by Azure Communication Services Email | Accepted |
+| [0019](0019-trip-lifecycle-status.md) | A trip has one lifecycle: wishlist, planned, completed — no wishlist entity | Accepted |
+| [0020](0020-diary-note-is-trip-notes.md) | The private diary note is the trip's notes field — no diary-note entity | Accepted |
 
 ## Adding a new ADR
 
