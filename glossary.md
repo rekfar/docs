@@ -88,7 +88,7 @@ colour-coded scale for marked trails, with room for a climbing/alpine grade late
 | Note / description | **notat / beskrivelse** | Free-text notes on a trip. |
 | Import (GPX) | **import (GPX)** | Loading a GPS track file into the app. |
 | Export | **eksport** | Saving user data out of the app. |
-| Private diary note | **dagboknotat** | A personal, private note on a trip, visible only to its author. |
+| Private diary note | **dagboknotat** | A personal, private note on a trip, visible only to its author — the trip's notes field, one per trip. |
 | Public guestbook | **gjestebok** | A public book of greetings attached to a summit, cabin, or route (the Norwegian mountain guestbook tradition). |
 | Greeting (guestbook entry) | **gjestebokhilsen / hilsen** | A short public message a user posts to a place's guestbook when they visit. |
 | Activity import | **aktivitetsimport** | Bringing in a recorded activity from a connected GPS service (e.g. Strava). |

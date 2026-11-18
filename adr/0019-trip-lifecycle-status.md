@@ -66,5 +66,7 @@ Nothing is built yet for UC-2..4, so the change is free now and a data migration
   privacy.
 - **The wishlist moves into Phase 1** of the [roadmap](../architecture/06-roadmap.md): once
   logging and planning exist it is two more values of one field, not a feature of its own.
-- **Not decided here:** whether `Trip.notes` and `DIARY_NOTE` are one thing — open in the
-  [implementation plan](../architecture/trip-lifecycle-plan.md#8-open-questions).
+- **A status can move backwards.** Setting a completed trip back to planned is an ordinary
+  edit — a correction — and the per-status rules are checked on the result.
+- **Decided separately:** `Trip.notes` is the private diary note
+  ([ADR-0020](0020-diary-note-is-trip-notes.md)).

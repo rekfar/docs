@@ -10,11 +10,11 @@ Three use cases, planned as one piece of work:
 
 | Use case | In one line | Requirements this plan closes | Left open |
 | --- | --- | --- | --- |
-| [UC-2](../use-cases/use-cases.md#uc-2--log-a-completed-summit-trip-turføring) Log a completed trip | Pick a peak, enter the outcome, save; the peak is bagged | FR-LOG-1..4, FR-LOG-6..8, FR-MAP-3, FR-STAT-1 | FR-LOG-5 (photos, C) |
+| [UC-2](../use-cases/use-cases.md#uc-2--log-a-completed-summit-trip-turføring) Log a completed trip | Pick a peak, enter the outcome, save; the peak is bagged | FR-LOG-1..4, FR-LOG-6..8, FR-BOOK-1..2, FR-MAP-3, FR-STAT-1 | FR-LOG-5 (photos, C) |
 | [UC-3](../use-cases/use-cases.md#uc-3--plan-a-future-trip-turplanlegging) Plan a future trip | Pick a peak, optionally a date; later complete it | FR-PLAN-1..3 | FR-PLAN-6 (route, C) |
 | [UC-4](../use-cases/use-cases.md#uc-4--build-a-wishlist--bucket-list-ønskeliste) Build a wishlist | Collect peaks; later turn one into a plan | FR-PLAN-4..5, FR-PEAK-1..2 | FR-PEAK-3 (area filter, S) |
 
-Sixteen requirements, none of them started in the
+Eighteen requirements, none of them started in the
 [traceability matrix](../requirements/traceability.md). FR-MAP-2, which UC-3 also lists, is
 already implemented.
 
@@ -82,7 +82,7 @@ in the SQL Database Project, beside `app.User`.
 | `AscentMeters` | int, nullable | ≥ 0 |
 | `Difficulty` | `enkel` / `middels` / `krevende` / `ekspert`, nullable | |
 | `Conditions` | short text, nullable | føre |
-| `Notes` | text, nullable | private; see open question 1 |
+| `Notes` | text, nullable | the private diary note — never shared, whatever `Privacy` says ([ADR-0020](../adr/0020-diary-note-is-trip-notes.md)) |
 | `Privacy` | as `app.User.DefaultPrivacy` | copied from the user's default at creation; not exposed until sharing exists |
 | `CreatedAt`, `UpdatedAt` | datetime2 | schema convention |
 
@@ -150,7 +150,7 @@ Design points:
 ## 6. Out of scope
 
 Photos (FR-LOG-5), routes on a plan (FR-PLAN-6), area and elevation filters (FR-PEAK-3 —
-there is no `AREA` data yet), GPX and tracks (UC-7), the guestbook (FR-BOOK-3..6), exposing
+there is no `AREA` data yet), dated or multiple diary notes per trip, GPX and tracks (UC-7), the guestbook (FR-BOOK-3..6), exposing
 default privacy on the profile (FR-ACC-4), and trips without a peak appearing on the map —
 they have no location until tracks exist, so they show in the list only.
 
@@ -165,7 +165,7 @@ the web client is split so the Must (UC-2) ships before the Shoulds.
 | 1 | `database` | `app.Trip`, `app.TripPeak`, constraints, indexes; smoke test | — |
 | 2 | `backend` | `Rekfar.Trips` module: CRUD, lifecycle rules, `/v1/stats` | — |
 | 3 | `backend` | `GET /v1/peaks/search`, `GET /v1/peaks/{id}` | — |
-| 4 | `webapp` | **UC-2:** peak search, log a completed trip from the popup, `/turer` list with edit and delete, bagged style on the map, trip detail, totals | FR-LOG-1..4, 6..8, FR-MAP-3, FR-STAT-1, FR-PEAK-1 |
+| 4 | `webapp` | **UC-2:** peak search, log a completed trip from the popup, `/turer` list with edit and delete, bagged style on the map, trip detail, totals | FR-LOG-1..4, 6..8, FR-BOOK-1..2, FR-MAP-3, FR-STAT-1, FR-PEAK-1 |
 | 5 | `webapp` | **UC-3 + UC-4:** the two remaining statuses in the form, tabs, convert actions, planned and wishlist map styles, peak detail page | FR-PLAN-1..5, FR-PEAK-2 |
 
 Slices 1–3 close no requirement on their own: a requirement is closed by the pull request
@@ -174,22 +174,20 @@ and 3 are independent of each other and can land in either order. Slice 5 is del
 small — by then the table, the endpoints and the form exist, and the work is two more values
 of one field. That is the pay-off of §2.
 
-## 8. Open questions
+## 8. Questions settled
 
-1. **Is `Trip.Notes` the diary note?** The data model has both `TRIP.notes` (FR-LOG-4) and
-   a separate `DIARY_NOTE` entity (FR-BOOK-1), and UC-2's flow says "add a private diary
-   note". Recommendation: one private `Notes` field on the trip now, closing FR-LOG-4, and
-   decide before slice 1 whether it also satisfies FR-BOOK-1..2 or whether dated, multiple
-   diary notes are still wanted. ADR-0019 leaves this open.
-2. **Can a completed trip go back to planned?** Recommendation: yes, through ordinary
-   editing — it is a correction, the rules in §2 are re-checked, and forbidding it buys
-   nothing.
-3. **Does a wishlist entry need exactly one peak?** Recommendation: yes in the UI (it keeps
-   "add to wishlist" idempotent); the schema allows more, which leaves room for FR-PLAN-4's
-   "trip idea".
-4. **Is the real catalogue in place?** FR-REF-1 is still "Not started" in the matrix. Trips
-   only need `[ref].Peak` rows to point at, so development works against the seed peaks, but
-   a logbook over five development peaks is not shippable to a user.
+All four questions this plan first carried were answered on 2026-11-18.
+
+1. **`Trip.Notes` is the diary note.** One private notes field on the trip, and no separate
+   `DIARY_NOTE` entity — [ADR-0020](../adr/0020-diary-note-is-trip-notes.md). It satisfies
+   FR-LOG-4 and FR-BOOK-1..2 together, which is why slice 4 closes all three.
+2. **A completed trip can go back to planned**, through ordinary editing. It is a
+   correction; the rules in §2 are re-checked on the result
+   ([ADR-0019](../adr/0019-trip-lifecycle-status.md)).
+3. **A wishlist entry has exactly one peak in the UI**, which keeps "add to wishlist"
+   idempotent. The schema allows more, leaving room for FR-PLAN-4's "trip idea".
+4. **The real catalogue is in place.** `[ref].Peak` holds the imported Kartverket peaks, so
+   trips point at real rows from the first slice and nothing here waits on ingestion.
 
 ## 9. Caveat on this plan
 

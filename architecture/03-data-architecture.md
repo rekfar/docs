@@ -44,7 +44,7 @@ erDiagram
         int ascentMeters
         enum difficulty "enkel|middels|krevende|ekspert"
         string conditions
-        string notes
+        string notes "private diary note, never shared"
         enum privacy
     }
     PEAK {
@@ -111,7 +111,10 @@ erDiagram
   `Sykkelrute`, `AnnenRute`).
 - **Track (spor):** the user's actual recorded line, typically from an imported GPX;
   distinct from the planned **Route (rute)**.
-- **Photo (bilde), Note (notat):** user content attached to a trip.
+- **Private diary note (dagboknotat / notat):** not an entity. It is the trip's `notes`
+  field — one free-text note per trip, visible only to its author and never published,
+  whatever the trip's `privacy` ([ADR-0020](../adr/0020-diary-note-is-trip-notes.md)).
+- **Photo (bilde):** user content attached to a trip.
 - **Area (område):** administrative or natural grouping (municipality *kommune*,
   region, mountain area *fjellområde*) used for filtering and stats.
 - **Wishlist (ønskeliste):** not an entity. It is the user's trips with status `wishlist`,
@@ -122,15 +125,14 @@ erDiagram
 These extend the model for the features in
 [ADR-0012](../adr/0012-kartverket-primary-source.md),
 [ADR-0008](../adr/0008-activity-tracking-integrations.md), and
-[ADR-0009](../adr/0009-private-and-public-logbook.md).
+[ADR-0009](../adr/0009-private-and-public-logbook.md) (the public half; the private half
+is `TRIP.notes`, above).
 
 ```mermaid
 erDiagram
-    USER ||--o{ DIARY_NOTE : writes
     USER ||--o{ CONNECTED_SERVICE : links
     CONNECTED_SERVICE ||--o{ ACTIVITY : imports
     ACTIVITY ||--o| TRIP : "produces / attaches to"
-    TRIP ||--o{ DIARY_NOTE : "has (private)"
     USER ||--o{ GUESTBOOK_ENTRY : posts
     PEAK ||--o{ GUESTBOOK_ENTRY : "shown on"
     CABIN ||--o{ GUESTBOOK_ENTRY : "shown on"
@@ -146,12 +148,6 @@ erDiagram
         string owner "DNT|Statskog|Fjellstyre|annen"
         enum kind "betjent|selvbetjent|ubetjent"
         string utnoUrl "optional link, nullable"
-    }
-    DIARY_NOTE {
-        id id
-        string text
-        datetime createdAt
-        enum visibility "private"
     }
     GUESTBOOK_ENTRY {
         id id
@@ -191,9 +187,10 @@ Key points:
 - **Cabin attributes come straight from N50:** `kind` is N50's `betjeningsgrad`
   (`betjent` / `selvbetjent` / `ubetjent`) and `owner` is its `eier`
   (DNT / Statskog / Fjellstyre / annen).
-- **Two-tier logbook:** **`DIARY_NOTE`** is always **private** to its author and belongs
-  to a trip; **`GUESTBOOK_ENTRY`** is **public** and belongs to a place (peak/cabin/
-  route). The `visibility` values are fixed and never cross over
+- **Two-tier logbook:** the private tier is the trip's **`notes`** field — always
+  **private** to its author ([ADR-0020](../adr/0020-diary-note-is-trip-notes.md)); the
+  public tier is **`GUESTBOOK_ENTRY`**, which belongs to a place (peak/cabin/route). They
+  are different fields on different entities, so one can never become the other
   ([ADR-0009](../adr/0009-private-and-public-logbook.md)).
 - **Activity import:** a **`CONNECTED_SERVICE`** (Strava/Garmin) imports **`ACTIVITY`**
   records; an activity may produce or attach to a `TRIP`, with `matchStatus` capturing
@@ -250,8 +247,8 @@ routes — plus the topographic base map. See
 - Trips are **private by default**; sharing is explicit and per-trip (P9).
 - Location data (home trailheads, frequented peaks) is sensitive — treat it as
   personal data under GDPR.
-- **Private diary notes are never public**; only explicit **guestbook greetings** are,
-  and the two are kept separate in the model
+- **Private diary notes (a trip's `notes`) are never public**; only explicit **guestbook
+  greetings** are, and the two are kept separate in the model
   ([ADR-0009](../adr/0009-private-and-public-logbook.md)). Public content is moderatable.
 - **Connected services** (Strava/Garmin) are **opt-in**; imported activities are private
   by default, and a user can disconnect and delete imported data

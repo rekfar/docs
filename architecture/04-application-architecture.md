@@ -92,12 +92,14 @@ web client is just one consumer; a future native app is another (P6). Design not
 - **Style:** A resource-oriented HTTP/JSON API (REST-ish). GraphQL is a possible
   alternative but is not required for this scope — decide alongside the stack.
 - **Resources (indicative):**
-  `/auth`, `/me`, `/trips`, `/trips/{id}`, `/trips/{id}/notes`,
+  `/auth`, `/me`, `/trips`, `/trips/{id}`,
   `/peaks`, `/peaks/{id}`, `/routes`, `/cabins`, `/places/{id}/guestbook`, `/stats`,
   `/connections/{provider}`, `/activities`, `/import/gpx`, `/export`.
 - **One trip resource:** plans and the wishlist are `GET /trips?status=planned` and
   `GET /trips?status=wishlist`; converting one is a status change on the trip
   ([ADR-0019](../adr/0019-trip-lifecycle-status.md)).
+- **The private diary note is a field of the trip**, read and written with it; there is no
+  `/trips/{id}/notes` resource ([ADR-0020](../adr/0020-diary-note-is-trip-notes.md)).
 - **Spatial queries:** endpoints accept a bounding box / extent for map-driven
   fetching (e.g. `GET /peaks?bbox=...`).
 - **Auth:** token/session-based; all user-data endpoints require authentication;
