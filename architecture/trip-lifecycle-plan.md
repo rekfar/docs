@@ -159,14 +159,18 @@ they have no location until tracks exist, so they show in the list only.
 Six slices, in order, each shippable. The backend is built once because it is one resource;
 the web client is split so the Must (UC-2) ships before the Shoulds.
 
-| # | Repository | Slice | Closes |
-| --- | --- | --- | --- |
-| 0 | `docs` | **Done.** [ADR-0019](../adr/0019-trip-lifecycle-status.md) — a trip has one lifecycle (`wishlist → planned → completed`). The [roadmap](06-roadmap.md) moved the wishlist from Phase 2 into Phase 1. The data architecture dropped `WISHLIST_ITEM` and gained the three-value status; the application architecture folded the Wishlist module into Trip and dropped `/plans` and `/wishlist`. No requirement IDs or wording changed. | — |
-| 1 | `database` | `app.Trip`, `app.TripPeak`, constraints, indexes; smoke test | — |
-| 2 | `backend` | `Rekfar.Trips` module: CRUD, lifecycle rules, `/v1/stats` | — |
-| 3 | `backend` | `GET /v1/peaks/search`, `GET /v1/peaks/{id}` | — |
-| 4 | `webapp` | **UC-2:** peak search, log a completed trip from the popup, `/turer` list with edit and delete, bagged style on the map, trip detail, totals | FR-LOG-1..4, 6..8, FR-BOOK-1..2, FR-MAP-3, FR-STAT-1, FR-PEAK-1 |
-| 5 | `webapp` | **UC-3 + UC-4:** the two remaining statuses in the form, tabs, convert actions, planned and wishlist map styles, peak detail page | FR-PLAN-1..5, FR-PEAK-2 |
+| # | Repository | Issue | Slice | Closes |
+| --- | --- | --- | --- | --- |
+| 0 | `docs` | — | **Done.** [ADR-0019](../adr/0019-trip-lifecycle-status.md) — a trip has one lifecycle (`wishlist → planned → completed`) — and [ADR-0020](../adr/0020-diary-note-is-trip-notes.md) — the diary note is the trip's notes field. The [roadmap](06-roadmap.md) moved the wishlist from Phase 2 into Phase 1. The data architecture dropped `WISHLIST_ITEM` and `DIARY_NOTE` and gained the three-value status; the application architecture folded the Wishlist module into Trip and dropped `/plans`, `/wishlist` and `/trips/{id}/notes`. No requirement IDs or wording changed. | — |
+| 1 | `database` | *not yet created* | `app.Trip`, `app.TripPeak`, constraints, indexes; smoke test | — |
+| 2 | `backend` | [rekfar/backend#14](https://github.com/rekfar/backend/issues/14) | `Rekfar.Trips` module: CRUD, lifecycle rules, `/v1/stats` | — |
+| 3 | `backend` | [rekfar/backend#15](https://github.com/rekfar/backend/issues/15) | `GET /v1/peaks/search`, `GET /v1/peaks/{id}` | — |
+| 4 | `webapp` | [rekfar/webapp#15](https://github.com/rekfar/webapp/issues/15) | **UC-2:** peak search, log a completed trip from the popup, `/turer` list with edit and delete, bagged style on the map, trip detail, totals | FR-LOG-1..4, 6..8, FR-BOOK-1..2, FR-STAT-1, FR-PEAK-1 |
+| 5 | `webapp` | [rekfar/webapp#16](https://github.com/rekfar/webapp/issues/16) | **UC-3 + UC-4:** the two remaining statuses in the form, tabs, convert actions, planned and wishlist map styles, peak detail page | FR-PLAN-1..5, FR-MAP-3, FR-PEAK-2 |
+
+Each issue lists the requirement issues it serves and, for the two `webapp` slices, the
+exact `Fixes rekfar/docs#…` lines its pull request must carry. FR-MAP-3 closes with slice 5,
+not 4: it asks for completed *and* planned trips on the map, and planned ones arrive there.
 
 Slices 1–3 close no requirement on their own: a requirement is closed by the pull request
 that makes it usable, per the [traceability convention](../requirements/README.md). Slices 2
