@@ -161,7 +161,7 @@ the web client is split so the Must (UC-2) ships before the Shoulds.
 
 | # | Repository | Slice | Closes |
 | --- | --- | --- | --- |
-| 0 | `docs` | **Done.** [ADR-0019](../adr/0019-trip-lifecycle-status.md) — a trip has one lifecycle (`wishlist → planned → completed`). The data architecture dropped `WISHLIST_ITEM` and gained the three-value status; the application architecture folded the Wishlist module into Trip and dropped `/plans` and `/wishlist`. No requirement IDs or wording changed. | — |
+| 0 | `docs` | **Done.** [ADR-0019](../adr/0019-trip-lifecycle-status.md) — a trip has one lifecycle (`wishlist → planned → completed`). The [roadmap](06-roadmap.md) moved the wishlist from Phase 2 into Phase 1. The data architecture dropped `WISHLIST_ITEM` and gained the three-value status; the application architecture folded the Wishlist module into Trip and dropped `/plans` and `/wishlist`. No requirement IDs or wording changed. | — |
 | 1 | `database` | `app.Trip`, `app.TripPeak`, constraints, indexes; smoke test | — |
 | 2 | `backend` | `Rekfar.Trips` module: CRUD, lifecycle rules, `/v1/stats` | — |
 | 3 | `backend` | `GET /v1/peaks/search`, `GET /v1/peaks/{id}` | — |
@@ -187,10 +187,7 @@ of one field. That is the pay-off of §2.
 3. **Does a wishlist entry need exactly one peak?** Recommendation: yes in the UI (it keeps
    "add to wishlist" idempotent); the schema allows more, which leaves room for FR-PLAN-4's
    "trip idea".
-4. **Does the wishlist move into Phase 1?** The [roadmap](06-roadmap.md) still lists it
-   under Phase 2. Slice 5 delivers it almost for free once slice 4 exists, so the
-   recommendation is yes — but the roadmap is unchanged until that is decided.
-5. **Is the real catalogue in place?** FR-REF-1 is still "Not started" in the matrix. Trips
+4. **Is the real catalogue in place?** FR-REF-1 is still "Not started" in the matrix. Trips
    only need `[ref].Peak` rows to point at, so development works against the seed peaks, but
    a logbook over five development peaks is not shippable to a user.
 

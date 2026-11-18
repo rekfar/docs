@@ -64,6 +64,7 @@ Nothing is built yet for UC-2..4, so the change is free now and a data migration
 - **Sharing a wishlist later** (FR-SOCIAL-2) is sharing a filtered set of trips, not a list
   object — there is no list to attach an audience to, so that design starts from the trip's
   privacy.
-- **Not decided here:** whether `Trip.notes` and `DIARY_NOTE` are one thing, and whether the
-  wishlist moves from Phase 2 into Phase 1. Both are open in the
+- **The wishlist moves into Phase 1** of the [roadmap](../architecture/06-roadmap.md): once
+  logging and planning exist it is two more values of one field, not a feature of its own.
+- **Not decided here:** whether `Trip.notes` and `DIARY_NOTE` are one thing — open in the
   [implementation plan](../architecture/trip-lifecycle-plan.md#8-open-questions).

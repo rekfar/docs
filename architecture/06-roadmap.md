@@ -41,6 +41,10 @@ Scope:
   deferred to Phase 2.
 - Trip planning: create a **planned trip** and see it on the map in a distinct style;
   convert planned → completed (FR-PLAN).
+- **Wishlist / bucket list (ønskeliste)** of peaks; convert a wish into a planned trip
+  (FR-PLAN-4..5). A wish is a trip with status `wishlist`
+  ([ADR-0019](../adr/0019-trip-lifecycle-status.md)), so it ships with logging and
+  planning — see the [trip lifecycle plan](trip-lifecycle-plan.md).
 - Basic stats: peaks bagged, total ascent, trips this year (FR-STAT).
 - Norwegian UI throughout; i18n scaffolding in place (P5).
 
@@ -65,7 +69,7 @@ public guestbook, GPX import, achievements, social/friends, native app.
 - Elevation profile for a trip using Kartverket Høydedata.
 - **Photo upload** — one or more photos per trip (FR-LOG-5), deferred from the MVP;
   richer trip detail pages.
-- **Wishlist / bucket list** of peaks (FR-PLAN); "peaks near me / in this area".
+- "Peaks near me / in this area".
 - Full **data export** (JSON) and account deletion (FR-DATA, P4/P9).
 - Achievements / milestones (FR-STAT, capability C8).
 
@@ -97,8 +101,8 @@ public guestbook, GPX import, achievements, social/friends, native app.
 
 ```mermaid
 flowchart LR
-    P0["Phase 0<br/>Docs & repo"] --> P1["Phase 1<br/>MVP log + map"]
-    P1 --> P2["Phase 2<br/>GPX, trails, wishlist, export"]
+    P0["Phase 0<br/>Docs & repo"] --> P1["Phase 1<br/>MVP log, plans,<br/>wishlist + map"]
+    P1 --> P2["Phase 2<br/>GPX, trails, export"]
     P2 --> P3["Phase 3<br/>Sharing, polish, English"]
     P1 --> P4["Phase 4<br/>Native app"]
     P2 --> P4
