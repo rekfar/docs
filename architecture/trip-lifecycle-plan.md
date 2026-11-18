@@ -1,8 +1,8 @@
 # Trips, plans and the wishlist — implementation plan (UC-2, UC-3, UC-4)
 
-**Status:** **Proposed** (2026-11-17). Nothing here is built. The modelling choice in §2 is
-the part that needs a yes before any code — it becomes ADR-0019 (slice 0 in §7). This page
-plays the role [user-accounts-mvp-plan.md](user-accounts-mvp-plan.md) played for accounts.
+**Status:** **Decided, not built** (2026-11-18). The modelling choice in §2 is accepted as
+[ADR-0019](../adr/0019-trip-lifecycle-status.md) and the architecture documents now describe
+it (slice 0 in §7); no code exists yet. This page plays the role [user-accounts-mvp-plan.md](user-accounts-mvp-plan.md) played for accounts.
 
 ## 1. What we are building
 
@@ -20,10 +20,10 @@ already implemented.
 
 The premise: **the three use cases are one entity seen at three points in its life.** A
 wishlist item is a trip with a peak and nothing else; a plan adds intent and maybe a date; a
-completed trip adds what happened. The data model already says this for two of the three —
-`TRIP.status` is `planned | completed` — and then keeps the wishlist as a separate
-`WISHLIST_ITEM` entity with its own module and its own `/wishlist` resource. This plan
-removes that exception.
+completed trip adds what happened. The data model used to say this for two of the three —
+`TRIP.status` was `planned | completed` — while keeping the wishlist as a separate
+`WISHLIST_ITEM` entity with its own module and its own `/wishlist` resource.
+[ADR-0019](../adr/0019-trip-lifecycle-status.md) removed that exception.
 
 ## 2. The decision: one trip, one status
 
@@ -40,7 +40,7 @@ stateDiagram-v2
 `Trip.status` takes three values — `wishlist`, `planned`, `completed` — and
 `WISHLIST_ITEM` goes away.
 
-| | With a separate wishlist entity (today's model) | One trip with a status (proposed) |
+| | With a separate wishlist entity (the earlier model) | One trip with a status (ADR-0019) |
 | --- | --- | --- |
 | Tables | `Trip`, `TripPeak`, `WishlistItem` | `Trip`, `TripPeak` |
 | Backend modules | Trip & Plan, Wishlist | Trips |
@@ -113,7 +113,7 @@ Design points:
 
 - **No `/v1/plans` or `/v1/wishlist`.** They are filters on `/v1/trips`. The indicative
   resource list in [application architecture §3](04-application-architecture.md#3-api-boundary)
-  and the backend README lose those two entries.
+  no longer has them; the backend README still does, and loses them in slice 2.
 - **Conversion is a `PATCH` of `status`**, not a special endpoint. Completing a plan sends
   `status: completed` together with the date and outcome fields in one request.
 - **User state stays out of `GET /v1/peaks`.** That endpoint is anonymous and publicly
@@ -161,7 +161,7 @@ the web client is split so the Must (UC-2) ships before the Shoulds.
 
 | # | Repository | Slice | Closes |
 | --- | --- | --- | --- |
-| 0 | `docs` | **ADR-0019** — a trip has one lifecycle (`wishlist → planned → completed`). Update the data architecture (drop `WISHLIST_ITEM`, three-value status), the application architecture (fold the Wishlist module into Trips, drop `/plans` and `/wishlist`), and the roadmap (the wishlist moves from Phase 2 into Phase 1). No requirement IDs change. | — |
+| 0 | `docs` | **Done.** [ADR-0019](../adr/0019-trip-lifecycle-status.md) — a trip has one lifecycle (`wishlist → planned → completed`). The data architecture dropped `WISHLIST_ITEM` and gained the three-value status; the application architecture folded the Wishlist module into Trip and dropped `/plans` and `/wishlist`. No requirement IDs or wording changed. | — |
 | 1 | `database` | `app.Trip`, `app.TripPeak`, constraints, indexes; smoke test | — |
 | 2 | `backend` | `Rekfar.Trips` module: CRUD, lifecycle rules, `/v1/stats` | — |
 | 3 | `backend` | `GET /v1/peaks/search`, `GET /v1/peaks/{id}` | — |
@@ -179,15 +179,18 @@ of one field. That is the pay-off of §2.
 1. **Is `Trip.Notes` the diary note?** The data model has both `TRIP.notes` (FR-LOG-4) and
    a separate `DIARY_NOTE` entity (FR-BOOK-1), and UC-2's flow says "add a private diary
    note". Recommendation: one private `Notes` field on the trip now, closing FR-LOG-4, and
-   decide in ADR-0019 whether it also satisfies FR-BOOK-1..2 or whether dated, multiple
-   diary notes are still wanted.
+   decide before slice 1 whether it also satisfies FR-BOOK-1..2 or whether dated, multiple
+   diary notes are still wanted. ADR-0019 leaves this open.
 2. **Can a completed trip go back to planned?** Recommendation: yes, through ordinary
    editing — it is a correction, the rules in §2 are re-checked, and forbidding it buys
    nothing.
 3. **Does a wishlist entry need exactly one peak?** Recommendation: yes in the UI (it keeps
    "add to wishlist" idempotent); the schema allows more, which leaves room for FR-PLAN-4's
    "trip idea".
-4. **Is the real catalogue in place?** FR-REF-1 is still "Not started" in the matrix. Trips
+4. **Does the wishlist move into Phase 1?** The [roadmap](06-roadmap.md) still lists it
+   under Phase 2. Slice 5 delivers it almost for free once slice 4 exists, so the
+   recommendation is yes — but the roadmap is unchanged until that is decided.
+5. **Is the real catalogue in place?** FR-REF-1 is still "Not started" in the matrix. Trips
    only need `[ref].Peak` rows to point at, so development works against the seed peaks, but
    a logbook over five development peaks is not shippable to a user.
 

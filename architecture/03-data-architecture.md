@@ -10,7 +10,7 @@ database technology is assumed (that is deferred; see
 
 | Kind | Owner | Examples | Notes |
 | --- | --- | --- | --- |
-| **User data** | The user | Account, trips (done/planned), wishlist, tracks, **private diary notes**, public **guestbook posts**, **connected services** & imported **activities**, photos (later), stats | Private by default (P9); portable (P4). |
+| **User data** | The user | Account, trips (wishlist/planned/completed), tracks, **private diary notes**, public **guestbook posts**, **connected services** & imported **activities**, photos (later), stats | Private by default (P9); portable (P4). |
 | **Reference data** | External providers, cached by us | Mountain tops, routes, **cabins (hytter)**, place names, elevation — sourced from **Kartverket** | Read-mostly; ingested and refreshed (capability C12). Each record keeps its Kartverket id, source dataset, and fetch date. Attribution required (P3). |
 
 Keeping these separate matters: reference data can be rebuilt from sources; user data
@@ -21,12 +21,10 @@ is irreplaceable and must be backed up and exportable.
 ```mermaid
 erDiagram
     USER ||--o{ TRIP : logs
-    USER ||--o{ WISHLIST_ITEM : keeps
-    TRIP }o--o{ PEAK : "summits (0..n)"
+    TRIP }o--o{ PEAK : "targets / summits (0..n)"
     TRIP ||--o{ PHOTO : has
     TRIP ||--o| TRACK : "has recorded"
     TRIP }o--o| ROUTE : "follows (planned)"
-    WISHLIST_ITEM }o--|| PEAK : targets
     PEAK }o--o| AREA : "located in"
     TRAIL }o--o{ PEAK : "connects / reaches"
     TRAIL }o--o| AREA : "located in"
@@ -40,9 +38,9 @@ erDiagram
     }
     TRIP {
         id id
-        enum status "planned | completed"
+        enum status "wishlist | planned | completed"
         enum type "fottur | topptur"
-        date date
+        date date "required when completed, none on wishlist"
         int ascentMeters
         enum difficulty "enkel|middels|krevende|ekspert"
         string conditions
@@ -86,21 +84,23 @@ erDiagram
         string name
         enum kind "kommune|region|fjellomrade"
     }
-    WISHLIST_ITEM {
-        id id
-        datetime addedAt
-        string notes
-    }
 ```
 
 ## 3. Key entities
 
 - **User (bruker):** account, display name, email, locale (`nb-NO` first),
   default privacy. Minimal by design (P9).
-- **Trip (tur):** the central entity. A `status` of `planned` or `completed`
-  unifies planning and logging — a plan becomes a log by changing status and adding
-  outcome data. `type` distinguishes a hike (*fottur*) from a summit trip (*topptur*).
+- **Trip (tur):** the central entity. A `status` of `wishlist`, `planned` or `completed`
+  unifies the wishlist, planning and logging — a wish becomes a plan, and a plan a log, by
+  changing status and adding data ([ADR-0019](../adr/0019-trip-lifecycle-status.md)).
+  `type` distinguishes a hike (*fottur*) from a summit trip (*topptur*).
   A trip may reference 0..n **peaks** (a traverse can bag several).
+  - **Fields follow the status.** A `completed` trip requires a date; a `wishlist` trip has
+    none (with a date it is a plan); ascent, difficulty and conditions describe an outcome.
+  - **Only `completed` counts.** A peak is **bagged (toppet)** when a completed trip
+    references it — derived, never stored — and statistics read completed trips only.
+  - **A peak's state is derived from its trips**, by precedence: completed, else planned,
+    else wishlist. The same peak can be bagged and planned again.
 - **Peak (fjelltopp):** reference data — name, location, and `ssrId` (the SSR
   `stedsnummer`) from the place-name register; elevation (moh.) **derived** by sampling
   Kartverket's DTM at that point; optional prominence (*primærfaktor*). Which SSR points
@@ -114,7 +114,8 @@ erDiagram
 - **Photo (bilde), Note (notat):** user content attached to a trip.
 - **Area (område):** administrative or natural grouping (municipality *kommune*,
   region, mountain area *fjellområde*) used for filtering and stats.
-- **Wishlist item (ønskeliste):** a peak (or trip idea) the user wants to do.
+- **Wishlist (ønskeliste):** not an entity. It is the user's trips with status `wishlist`,
+  at most one per peak — a set, where completed trips are a log.
 
 ### 3b. Additional entities (external references, activities, guestbook, connections)
 

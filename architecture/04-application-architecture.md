@@ -17,8 +17,7 @@ flowchart TB
 
     subgraph App["Application tier — Rekfar API (modular monolith)"]
         AUTH["Auth & Account module"]
-        TRIP["Trip & Plan module<br/>(incl. private diary notes)"]
-        WISH["Wishlist module"]
+        TRIP["Trip module<br/>(wishlist, plans, log;<br/>incl. private diary notes)"]
         PEAK["Peak/Route/Cabin catalogue<br/>(Kartverket-sourced)"]
         GUEST["Guestbook module (public)"]
         STAT["Statistics module"]
@@ -42,7 +41,6 @@ flowchart TB
 
     UI --> AUTH
     UI --> TRIP
-    UI --> WISH
     UI --> PEAK
     UI --> STAT
     UI --> IMPEX
@@ -54,7 +52,6 @@ flowchart TB
 
     AUTH --> DB
     TRIP --> DB
-    WISH --> DB
     PEAK --> DB
     STAT --> DB
     MEDIA --> OBJ
@@ -75,10 +72,9 @@ flowchart TB
 | Component | Responsibility |
 | --- | --- |
 | **Web client** | The Norwegian UI. Renders the map, trip lists, forms, stats. Responsive and mobile-friendly (P10). Internationalised so English can be added later (P5). |
-| **Map component** | Loads topographic tiles from Kartverket; draws layers for peaks, trails, and the user's trips (done/planned); handles pan/zoom, extent queries, and marker interaction. Provider abstracted ([ADR-0006](../adr/0006-map-provider-deferred.md)). |
+| **Map component** | Loads topographic tiles from Kartverket; draws layers for peaks, trails, and the user's trips (done/planned/wishlist); handles pan/zoom, extent queries, and marker interaction. Provider abstracted ([ADR-0006](../adr/0006-map-provider-deferred.md)). |
 | **Auth & Account** | Registration, login, session/token issuance, profile, privacy settings, account deletion. |
-| **Trip & Plan** | CRUD for trips; the `planned → completed` transition; ascent/difficulty/conditions; linking peaks and tracks; **private diary notes (dagboknotat)**. |
-| **Wishlist** | Add/remove peaks and trip ideas to a personal wishlist; convert a wishlist item into a planned trip. |
+| **Trip** | CRUD for trips in all three statuses; the `wishlist → planned → completed` transitions and the per-status rules; ascent/difficulty/conditions; linking peaks and tracks; **private diary notes (dagboknotat)**. The wishlist and the plans are trips filtered by status, not modules of their own ([ADR-0019](../adr/0019-trip-lifecycle-status.md)). |
 | **Peak/Route/Cabin catalogue** | Query peaks, routes, and **cabins (hytter)** sourced from **Kartverket** (search, by area, within map extent); place detail, including an optional outbound description link when one is known; "have I done this" against the user's history. |
 | **Statistics** | Aggregate the user's trips into stats and achievements (peaks bagged, total ascent, per year/region). |
 | **Guestbook** | Post and read **public greetings (gjestebok)** on a place (peak/cabin/route); enforce public-vs-private separation; moderation hooks ([ADR-0009](../adr/0009-private-and-public-logbook.md)). |
@@ -96,9 +92,12 @@ web client is just one consumer; a future native app is another (P6). Design not
 - **Style:** A resource-oriented HTTP/JSON API (REST-ish). GraphQL is a possible
   alternative but is not required for this scope — decide alongside the stack.
 - **Resources (indicative):**
-  `/auth`, `/me`, `/trips`, `/trips/{id}`, `/trips/{id}/notes`, `/plans`, `/wishlist`,
+  `/auth`, `/me`, `/trips`, `/trips/{id}`, `/trips/{id}/notes`,
   `/peaks`, `/peaks/{id}`, `/routes`, `/cabins`, `/places/{id}/guestbook`, `/stats`,
   `/connections/{provider}`, `/activities`, `/import/gpx`, `/export`.
+- **One trip resource:** plans and the wishlist are `GET /trips?status=planned` and
+  `GET /trips?status=wishlist`; converting one is a status change on the trip
+  ([ADR-0019](../adr/0019-trip-lifecycle-status.md)).
 - **Spatial queries:** endpoints accept a bounding box / extent for map-driven
   fetching (e.g. `GET /peaks?bbox=...`).
 - **Auth:** token/session-based; all user-data endpoints require authentication;
@@ -120,7 +119,7 @@ sequenceDiagram
     U->>A: GET /peaks?bbox=<extent>
     A-->>U: Peaks in extent (+ which are bagged by user)
     U->>A: GET /trips?bbox=<extent>&status=all
-    A-->>U: User trips (done/planned) in extent
+    A-->>U: User trips (done/planned/wishlist) in extent
     U-->>U: Render layers: tiles + peaks + trips
 ```
 

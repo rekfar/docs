@@ -55,7 +55,7 @@ flowchart LR
 | --- | --- | --- |
 | C1 | **Trip logging** | Record a completed trip: date, peak(s), route/track, ascent, difficulty, conditions, and **private diary notes (dagboknotat)**; photos in a later phase. |
 | C2 | **Trip planning** | Create a planned/future trip; convert it to a completed trip after doing it. |
-| C3 | **Wishlist** | Maintain a list of peaks/trips the user wants to do (peak bagging / *toppjakt*). |
+| C3 | **Wishlist** | Maintain a list of peaks/trips the user wants to do (peak bagging / *toppjakt*). Realised as trips with status `wishlist` ([ADR-0019](../adr/0019-trip-lifecycle-status.md)). |
 | C4 | **Map visualisation** | Show peaks, trails, and the user's trips on a topographic map of Norway with toggleable layers. |
 | C5 | **Peak & place catalogue** | Browse/search Norwegian **mountain tops, routes, and cabins** sourced from **Kartverket**; view details and own history. |
 | C6 | **Trail browsing** | Browse marked trails/routes near a location or peak. |

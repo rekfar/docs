@@ -20,7 +20,7 @@ the Norwegian name is authoritative.
 | Trip log / logbook | **turloggbok** | The personal record of trips — the domain concept Rekfar is built around. |
 | Log entry | **turføring / loggføring** | A single recorded trip in the logbook. |
 | Trip plan / planned trip | **turplan / planlagt tur** | A future trip the user intends to do. |
-| Wishlist / bucket list | **ønskeliste** | Collection of peaks or trips the user wants to do. |
+| Wishlist / bucket list | **ønskeliste** | The peaks or trips the user wants to do — modelled as trips with status `wishlist`, not as a separate list. |
 | Peak bagging | **toppjakt / topplogging** | Collecting summits as an activity; ticking off peaks. |
 | Track / GPS track | **spor (GPS-spor)** | The recorded line of where the user actually went. |
 | Route (planned line) | **rute / trasé** | The intended line of a trip, distinct from the recorded track. |
